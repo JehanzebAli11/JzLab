@@ -15,3 +15,5 @@ Start prompts for single tasks, named in the master plan
 | `spark1-teaser-post.md` | cloud | spark-one, JzLab | 7-11 Nov |
 | `lit-vendor-headsup.md` | cloud | lost-in-transliteration | 13 Nov |
 | `lit-fresh-eyes.md` | cloud, new thread with no history | lost-in-transliteration | 14 Nov |
+| `injection-strange-places.md` | cloud (code), Spark and owner (tests) | agent-firewall | 27 Nov-10 Dec |
+| `spark1-3d-bank.md` | cloud (generator), Spark (render, train) | spark-one | 2-15 Dec |

@@ -51,6 +51,8 @@ GROUND RULES (no exceptions)
 5. No personal data leaves the Spark. Fake secrets and throwaway keys, local sandboxes only.
 6. Nothing from NFL Football Universe or with NFL branding; no agents on live games.
 7. Security work is defensive and on his own devices, networks and agents only.
+   Third-party data keeps its licence terms (e.g. ABO via codepawl/abo-glb is CC BY 4.0: credit
+   Amazon and cite the ABO paper); check a licence before using any dataset.
 8. Git identity: Jehanzeb Ali <jehanzeb1111@icloud.com>.
 
 ASK JEHANZEB FIRST

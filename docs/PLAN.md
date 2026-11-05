@@ -19,7 +19,8 @@ closes **22 Nov** and Jehanzeb submits on **Thu 19 Nov**. Smaller jobs fill the 
 | W5 | Scam Radar | Spark (scam) + phone | `agents/scam/prompt.md` | nights 6-7 Nov; phone 14-15 Nov | shares | export passes `--strict`, runs on the phone with measured memory |
 | W6 | spark-lab | Spark (heal) + cloud | `agents/heal/prompt.md`; `prompts/threads/pr3-split.md` | 7 Nov; PR #3 this week | **off** about 2 h on 7 Nov | heal Steps 1-5 verified, #2 and #3 merged |
 | W7 | Autopilot | Mac | `agents/autopilot/prompt.md` | any time | none | learning curve in `docs/results-gauntlet.md` |
-| W8 | Later: Wi-Fi-name injection, Air IDS, status pane, CI eval gates | cloud + Mac | to be written | 27 Nov-Dec | - | - |
+| W8 | Prompt injection in strange places (Wi-Fi, Bluetooth, captive portal, 3D asset files); later Air IDS, status pane, CI eval gates | cloud + Spark + owner | `prompts/threads/injection-strange-places.md` | 27 Nov-10 Dec | shares | `results/CHANNELS.md` per channel, with and without the firewall |
+| W9 | Spark-1 v2 sees in 3D (ABO furniture rendered with 67.js; size, count, depth, Box, 3D illusions) | cloud + Spark | `prompts/threads/spark1-3d-bank.md` | 2-15 Dec | shares; maybe off for v2 training | 3D eval report: v1 vs v2, plus the 3D illusion set |
 
 ## Key dates
 
@@ -40,7 +41,10 @@ closes **22 Nov** and Jehanzeb submits on **Thu 19 Nov**. Smaller jobs fill the 
 | 20-21 Nov | Spark-1 evals; served on :8001 |
 | 22-25 Nov | Firewall part 2 (Spark-1 as judge); Tue 24 post: self-healing |
 | Thu 26 Nov | Post: agent firewall part 2 |
-| 1, 3, 8, 10 Dec | Posts: Spark-1 results, Scam Radar on a phone, Autopilot curve, Wi-Fi-name injection |
+| 27-29 Nov | W8 injection lab code |
+| 1, 3, 8, 10 Dec | Posts: Spark-1 results, Scam Radar on a phone, Autopilot curve, prompt injection in strange places |
+| 2-13 Dec | W9: 3D generator (cloud), render and train v2 (Spark) |
+| Tue 15 Dec | Post: Spark-1 v2 in 3D |
 
 ## Concurrency
 
@@ -60,3 +64,5 @@ closes **22 Nov** and Jehanzeb submits on **Thu 19 Nov**. Smaller jobs fill the 
 | W5 Scam Radar | pipeline and app done; not trained | 5 Nov |
 | W6 spark-lab | PRs #1-#3 open, CI green | 5 Nov |
 | W7 Autopilot | Gauntlet built; curve not run | 5 Nov |
+| W8 injection lab | planned | 5 Nov |
+| W9 Spark-1 v2 in 3D | planned | 5 Nov |

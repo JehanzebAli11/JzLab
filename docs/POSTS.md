@@ -16,7 +16,8 @@ slips, the next ready post takes its slot. The orchestrator drafts into `posts/`
 | Tue 1 Dec | Spark-1 results | Does a 5B model know when it's wrong? (calibration first) | Reliability diagram: Spark-1, E2B base, gpt-4o-mini, Decisions API | Step-7 report exists |
 | Thu 3 Dec | Scam Radar on a phone | "A 270M model checking scam texts on a phone, offline: here's the memory it takes." | `results.mp4` from real `device.json` files | Phone test ran |
 | Tue 8 Dec | Autopilot learning curve | "I let an agent learn my obby for a month" | Game-scored curve plus a recording | The curve shows a trend |
-| Thu 10 Dec | Wi-Fi-name injection | "I hijacked an AI agent with a Wi-Fi network name." | A short video on your own network | Own network and agent only |
+| Thu 10 Dec | Prompt injection in strange places | "Prompt injection hides in strange places: Wi-Fi names, Bluetooth names, 3D files." | A short video on your own network | W8 results exist; own network and agent only |
+| Tue 15 Dec | Spark-1 v2 in 3D | "Can a 5B model tell which chair is bigger from one photo? I built thousands of rooms to find out." | Rendered rooms with v1 vs v2 answers, plus one 3D illusion | 3D eval report exists; ABO credited (CC BY 4.0) |
 
 Where today's numbers come from:
 
