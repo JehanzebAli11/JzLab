@@ -1,0 +1,424 @@
+#!/usr/bin/env bash
+# jzd: the host side of JzLab. Runs on the machine where agents live (the Spark,
+# or the MacBook for WHERE=mac agents). bin/jz on the Mac calls it over SSH.
+# Each agent is an interactive Claude Code session in its own tmux window.
+# Written for bash 3.2 (macOS) and later: no associative arrays, no mapfile.
+set -u
+
+LAB_DIR=${LAB_DIR:-$HOME/lab}
+JZ_HOME=${JZ_HOME:-$(cd "$(dirname "$0")/.." && pwd)}
+STATE=${JZ_STATE:-$LAB_DIR/.jzlab}
+SESSION=${JZ_SESSION:-jzlab}
+CLAUDE_BIN=${CLAUDE_BIN:-claude}
+JZ_MODE=${JZ_MODE:-acceptEdits}
+JZ_WHERE=${JZ_WHERE:-spark}
+TEACHER_URL=${TEACHER_URL:-http://localhost:8000/v1}
+TEACHER_UNIT=${TEACHER_UNIT:-vllm-teacher}
+
+mkdir -p "$STATE/logs" "$STATE/run"
+
+die() { echo "jz: $*" >&2; exit 1; }
+
+load_agent() {
+  local f="$JZ_HOME/agents/$1/agent.env"
+  [ -f "$f" ] || die "no agent '$1' (see: jz agents)"
+  # shellcheck disable=SC2034  # HANDOFF and PHASE are read by other commands and by people
+  NAME="" TITLE="" WHERE="spark" REPO="" DIR="" BRANCH="main" WORKTREE=0 TEACHER="none" PHASE="" WINDOW="" HANDOFF=""
+  # shellcheck disable=SC1090
+  . "$f"
+  [ "$NAME" = "$1" ] || die "agents/$1/agent.env has NAME=$NAME"
+}
+
+agent_names() {
+  local d
+  for d in "$JZ_HOME"/agents/*/; do
+    [ -f "$d/agent.env" ] && basename "$d"
+  done
+}
+
+workdir() {
+  if [ "$WORKTREE" = "1" ]; then
+    echo "$LAB_DIR/wt/$NAME"
+  else
+    echo "$LAB_DIR/$DIR"
+  fi
+}
+
+window_exists() {
+  tmux list-windows -t "$SESSION" -F '#{window_name}' 2>/dev/null | grep -qx "$1"
+}
+
+pane_state() {
+  # prints: none | running | exited
+  if ! window_exists "$1"; then echo none; return; fi
+  if tmux capture-pane -p -t "$SESSION:$1" -S -40 2>/dev/null | grep -q '^\[jz\] agent exited'; then
+    echo exited
+  else
+    echo running
+  fi
+}
+
+ensure_session() {
+  # no inherited stdio: over SSH, a tmux server holding the pipe would keep ssh from returning
+  tmux has-session -t "$SESSION" 2>/dev/null \
+    || tmux new-session -d -s "$SESSION" -n home -c "$LAB_DIR" </dev/null >/dev/null 2>&1
+}
+
+install_settings() {
+  # Claude Code reads .claude/settings.local.json from the git root; it stays out of git.
+  local wd="$1" main="$LAB_DIR/$DIR" d
+  for d in "$wd" "$main"; do
+    [ -d "$d" ] || continue
+    if [ ! -f "$d/.claude/settings.local.json" ]; then
+      mkdir -p "$d/.claude"
+      cp "$JZ_HOME/templates/claude-settings.json" "$d/.claude/settings.local.json"
+      echo "jz: installed agent permissions in $d/.claude/settings.local.json"
+    fi
+  done
+}
+
+prepare_workdir() {
+  local wd
+  wd=$(workdir)
+  if [ ! -d "$LAB_DIR/$DIR/.git" ]; then
+    die "$LAB_DIR/$DIR is not cloned yet; run: jz sync"
+  fi
+  if [ "$WORKTREE" = "1" ] && [ ! -d "$wd" ]; then
+    mkdir -p "$LAB_DIR/wt"
+    git -C "$LAB_DIR/$DIR" fetch -q origin "$BRANCH" 2>/dev/null || true
+    if git -C "$LAB_DIR/$DIR" rev-parse -q --verify "refs/heads/$BRANCH" >/dev/null; then
+      git -C "$LAB_DIR/$DIR" worktree add -q "$wd" "$BRANCH" || die "worktree add failed"
+    else
+      git -C "$LAB_DIR/$DIR" worktree add -q -b "$BRANCH" "$wd" "origin/$BRANCH" || die "worktree add failed"
+    fi
+  fi
+  install_settings "$wd"
+  echo "$wd"
+}
+
+cmd_start() {
+  local name="" prompt="" headless=0 cont=0
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --prompt) prompt="$2"; shift 2 ;;
+      --headless) headless=1; shift ;;
+      --continue) cont=1; shift ;;
+      *) name="$1"; shift ;;
+    esac
+  done
+  [ -n "$name" ] || die "usage: jz start <agent> [--prompt FILE] [--headless] [--continue]"
+  load_agent "$name"
+  [ "$WHERE" = "$JZ_WHERE" ] || die "$name runs on the $WHERE, not here ($JZ_WHERE)"
+  [ -n "$prompt" ] || prompt="$JZ_HOME/agents/$name/prompt.md"
+  case "$prompt" in /*) ;; *) prompt="$JZ_HOME/$prompt" ;; esac
+  [ -f "$prompt" ] || die "no prompt file $prompt"
+  case "$(pane_state "$name")" in
+    running) die "$name is already running. Use: jz say $name \"...\", or jz stop $name" ;;
+    exited) tmux kill-window -t "$SESSION:$name" ;;
+  esac
+
+  local wd pf launcher log
+  wd=$(prepare_workdir) || exit 1
+  wd=$(echo "$wd" | tail -n 1)
+  pf="$STATE/run/$name.prompt.md"
+  launcher="$STATE/run/$name.sh"
+  log="$STATE/logs/$name.log"
+  {
+    cat "$JZ_HOME/templates/agent-preamble.md"
+    echo
+    echo "---"
+    echo
+    echo "Your agent name is \`$name\` ($TITLE). Working directory: \`$wd\`."
+    echo
+    cat "$prompt"
+  } > "$pf"
+
+  # The launcher's $(...) must expand when it runs, not now: single quotes on purpose.
+  # shellcheck disable=SC2016
+  {
+    echo '#!/usr/bin/env bash'
+    printf 'cd %q || exit 1\n' "$wd"
+    printf 'echo "[jz] %s started $(date "+%%F %%T") in %s"\n' "$name" "$wd"
+    if [ "$headless" = "1" ]; then
+      printf '%q -p "$(cat %q)" --permission-mode %q --output-format stream-json --verbose > %q 2>&1\n' \
+        "$CLAUDE_BIN" "$pf" "$JZ_MODE" "$STATE/logs/$name.jsonl"
+    elif [ "$cont" = "1" ]; then
+      printf '%q --continue --permission-mode %q\n' "$CLAUDE_BIN" "$JZ_MODE"
+    else
+      printf '%q --permission-mode %q "$(cat %q)"\n' "$CLAUDE_BIN" "$JZ_MODE" "$pf"
+    fi
+    echo 'echo "[jz] agent exited with code $? at $(date "+%F %T")"'
+    echo 'exec bash'
+  } > "$launcher"
+  chmod +x "$launcher"
+
+  ensure_session
+  tmux new-window -d -t "$SESSION" -n "$name" -c "$wd" "bash $(printf %q "$launcher")"
+  tmux pipe-pane -t "$SESSION:$name" -o "cat >> $(printf %q "$log")"
+  echo "$(date '+%F %T') start $name mode=$JZ_MODE headless=$headless continue=$cont prompt=$prompt" >> "$STATE/events.log"
+  echo "started $name in tmux $SESSION:$name ($wd)"
+}
+
+clean_capture() {
+  # last N lines of the pane, trailing blank lines removed
+  tmux capture-pane -p -J -t "$SESSION:$1" -S "-$2" 2>/dev/null | sed -e :a -e '/^[[:space:]]*$/{$d;N;ba' -e '}'
+}
+
+last_marker() {
+  tmux capture-pane -p -J -t "$SESSION:$1" -S -3000 2>/dev/null | grep -o 'JZ-\(STATUS\|NEED\|DONE\):.*' | tail -n 1 | cut -c1-140
+}
+
+needs_approval() {
+  # a permission menu, or the first-run "trust this folder" question
+  tmux capture-pane -p -t "$SESSION:$1" -S -25 2>/dev/null \
+    | grep -qiE 'Do you want to proceed|trust the files|Do you trust|trust this folder'
+}
+
+cmd_ls() {
+  local n st mark flag
+  printf '%-14s %-6s %-9s %s\n' AGENT WHERE STATE "LAST JZ- LINE"
+  for n in $(agent_names); do
+    load_agent "$n"
+    if [ "$WHERE" != "$JZ_WHERE" ]; then
+      continue
+    fi
+    st=$(pane_state "$n")
+    mark="" flag=""
+    if [ "$st" != none ]; then
+      mark=$(last_marker "$n")
+      if [ "$st" = running ] && needs_approval "$n"; then flag="APPROVAL"; fi
+      case "$mark" in JZ-NEED:*) [ -z "$flag" ] && flag="NEEDS-YOU" ;; esac
+    fi
+    [ -n "$flag" ] && st="$flag"
+    printf '%-14s %-6s %-9s %s\n' "$n" "$WHERE" "$st" "$mark"
+  done
+}
+
+cmd_peek() {
+  local n="${1:-}" lines="${2:-60}"
+  [ -n "$n" ] || die "usage: jz peek <agent> [lines]"
+  window_exists "$n" || die "$n is not running"
+  clean_capture "$n" "$lines"
+}
+
+cmd_say() {
+  local n="${1:-}"
+  [ -n "$n" ] || die "usage: jz say <agent> \"message\""
+  shift
+  local msg="$*"
+  [ -n "$msg" ] || die "empty message"
+  window_exists "$n" || die "$n is not running"
+  msg=$(printf '%s' "$msg" | tr '\n' ' ')
+  tmux send-keys -t "$SESSION:$n" -l -- "$msg"
+  sleep 0.3
+  tmux send-keys -t "$SESSION:$n" Enter
+  echo "$(date '+%F %T') say $n: $msg" >> "$STATE/events.log"
+  echo "sent to $n"
+}
+
+cmd_key() {
+  local n="${1:-}"
+  [ -n "$n" ] || die "usage: jz key <agent> <tmux key names...>  e.g. jz key spark1 Escape"
+  shift
+  window_exists "$n" || die "$n is not running"
+  tmux send-keys -t "$SESSION:$n" "$@"
+  echo "$(date '+%F %T') key $n: $*" >> "$STATE/events.log"
+  echo "keys sent to $n: $*"
+}
+
+cmd_stop() {
+  local n="${1:-}"
+  [ -n "$n" ] || die "usage: jz stop <agent>"
+  window_exists "$n" || die "$n is not running"
+  tmux send-keys -t "$SESSION:$n" C-c
+  sleep 1
+  tmux send-keys -t "$SESSION:$n" C-c
+  sleep 1
+  tmux kill-window -t "$SESSION:$n"
+  echo "$(date '+%F %T') stop $n" >> "$STATE/events.log"
+  echo "stopped $n (resume later with: jz start $n --continue)"
+}
+
+teacher_models() {
+  curl -s -m 3 "$TEACHER_URL/models" 2>/dev/null | python3 -c 'import sys,json
+try:
+    print(",".join(m["id"] for m in json.load(sys.stdin)["data"]))
+except Exception:
+    print("")' 2>/dev/null
+}
+
+cmd_teacher() {
+  case "${1:-status}" in
+    status)
+      local m
+      m=$(teacher_models)
+      if [ -n "$m" ]; then echo "teacher: up ($m)"; else echo "teacher: down"; fi
+      [ -f "$STATE/TEACHER_OFF" ] && echo "teacher held off for: $(cat "$STATE/TEACHER_OFF")"
+      return 0 ;;
+    stop)
+      shift
+      local why="${*:-unspecified}"
+      systemctl --user stop "$TEACHER_UNIT" || die "could not stop $TEACHER_UNIT"
+      echo "$(date '+%F %T') $why" > "$STATE/TEACHER_OFF"
+      echo "$(date '+%F %T') teacher stop: $why" >> "$STATE/events.log"
+      echo "teacher stopped ($why). Agents that need it will wait; restart with: jz teacher start" ;;
+    start)
+      systemctl --user start "$TEACHER_UNIT" || die "could not start $TEACHER_UNIT"
+      rm -f "$STATE/TEACHER_OFF"
+      echo "$(date '+%F %T') teacher start" >> "$STATE/events.log"
+      echo "teacher starting; the 31B takes a few minutes to load (jz teacher status)" ;;
+    *) die "usage: jz teacher status|stop <reason>|start" ;;
+  esac
+}
+
+cmd_status() {
+  echo "== $(hostname) $(date '+%F %T')"
+  if command -v free >/dev/null; then free -g | awk 'NR<=2'; fi
+  df -h "$LAB_DIR" 2>/dev/null | awk 'NR==2{print "disk " $4 " free of " $2 " (" $5 " used)"}'
+  if command -v nvidia-smi >/dev/null; then
+    nvidia-smi --query-gpu=name,utilization.gpu,temperature.gpu --format=csv,noheader 2>/dev/null | sed 's/^/gpu /'
+  fi
+  if [ "$JZ_WHERE" = spark ]; then
+    cmd_teacher status
+    if [ -d "$LAB_DIR/spark-lab" ]; then
+      echo "== spark-lab queue"
+      (cd "$LAB_DIR/spark-lab" && python3 -m lab status 2>&1 | head -n 15)
+    fi
+  fi
+  echo "== agents"
+  cmd_ls
+}
+
+cmd_report() {
+  local d="$LAB_DIR/spark-lab/reports" f
+  [ -d "$d" ] || die "no reports folder at $d"
+  if [ -n "${1:-}" ]; then f="$d/$1.md"; else f=$(find "$d" -maxdepth 1 -name '*.md' | sort | tail -n 1); fi
+  [ -n "$f" ] && [ -f "$f" ] || die "no report found"
+  echo "== $f"
+  cat "$f"
+}
+
+repo_list() {
+  # every repo an agent uses, plus repos.txt, without duplicates
+  {
+    local n
+    for n in $(agent_names); do
+      load_agent "$n"
+      [ "$WHERE" = "$JZ_WHERE" ] && echo "$REPO $DIR"
+    done
+    if [ "$JZ_WHERE" = spark ] && [ -f "$JZ_HOME/repos.txt" ]; then
+      grep -v '^#' "$JZ_HOME/repos.txt" | grep -v '^[[:space:]]*$'
+    fi
+  } | sort -u
+}
+
+cmd_sync() {
+  mkdir -p "$LAB_DIR"
+  if [ -d "$JZ_HOME/.git" ]; then
+    git -C "$JZ_HOME" pull -q --ff-only && echo "JzLab: up to date ($(git -C "$JZ_HOME" log -1 --format=%h))"
+  fi
+  local repo dir
+  repo_list | while read -r repo dir; do
+    [ -n "$repo" ] || continue
+    [ -n "$dir" ] || dir=$(basename "$repo")
+    if [ -d "$LAB_DIR/$dir/.git" ]; then
+      git -C "$LAB_DIR/$dir" fetch -q --all --prune 2>/dev/null
+      printf '%-26s %-22s %s\n' "$dir" "$(git -C "$LAB_DIR/$dir" rev-parse --abbrev-ref HEAD)" \
+        "$(git -C "$LAB_DIR/$dir" status --porcelain | wc -l | tr -d ' ') local changes"
+    else
+      echo "cloning $repo -> $LAB_DIR/$dir"
+      git clone -q "https://github.com/$repo.git" "$LAB_DIR/$dir" || echo "  clone failed (gh auth login? repo name?)"
+    fi
+  done
+}
+
+cmd_doctor() {
+  local ok=1 c
+  for c in tmux git python3 curl "$CLAUDE_BIN"; do
+    if command -v "$c" >/dev/null; then echo "ok   $c"; else echo "MISS $c"; ok=0; fi
+  done
+  if command -v gh >/dev/null; then
+    if gh auth status >/dev/null 2>&1; then echo "ok   gh (signed in)"; else echo "WARN gh not signed in: gh auth login"; fi
+  else
+    echo "WARN gh missing (needed for pull requests)"
+  fi
+  echo "info git identity: $(git config --global user.name) <$(git config --global user.email)>"
+  "$CLAUDE_BIN" --version </dev/null 2>/dev/null | head -n 1 | sed 's/^/info claude /'
+  if [ "$JZ_WHERE" = spark ]; then
+    command -v nvidia-smi >/dev/null && echo "ok   nvidia-smi" || echo "WARN nvidia-smi missing"
+    cmd_teacher status
+  fi
+  local repo dir
+  repo_list | while read -r repo dir; do
+    [ -n "$dir" ] || dir=$(basename "$repo")
+    if [ -d "$LAB_DIR/$dir/.git" ]; then echo "ok   repo $dir"; else echo "MISS repo $dir (jz sync)"; fi
+  done
+  [ "$ok" = 1 ] || exit 1
+}
+
+cmd_agents() {
+  local n
+  printf '%-14s %-6s %-6s %-14s %-26s %s\n' AGENT WHERE PHASE WINDOW REPO TEACHER
+  for n in $(agent_names); do
+    load_agent "$n"
+    printf '%-14s %-6s %-6s %-14s %-26s %s\n' "$n" "$WHERE" "$PHASE" "$WINDOW" "${DIR}$([ "$WORKTREE" = 1 ] && echo "@$BRANCH")" "$TEACHER"
+  done
+}
+
+cmd_run() {
+  [ $# -gt 0 ] || die "usage: jz run \"command\""
+  echo "$(date '+%F %T') run: $*" >> "$STATE/events.log"
+  cd "$LAB_DIR" && bash -lc "$*"
+}
+
+cmd_events() { tail -n "${1:-30}" "$STATE/events.log" 2>/dev/null; }
+
+cmd_brief() {
+  # status, then the last lines of every live agent: the orchestrator's main view
+  local lines="${1:-12}" n
+  cmd_status
+  for n in $(agent_names); do
+    load_agent "$n"
+    [ "$WHERE" = "$JZ_WHERE" ] || continue
+    window_exists "$n" || continue
+    echo
+    echo "== $n (last $lines lines)"
+    clean_capture "$n" "$lines"
+  done
+}
+
+usage() {
+  cat <<'EOF'
+jzd <command>   (normally called through bin/jz on the Mac)
+  agents | ls | status | brief [lines] | doctor | sync
+  start <agent> [--prompt FILE] [--headless] [--continue]
+  peek <agent> [lines] | say <agent> "msg" | key <agent> KEYS... | stop <agent>
+  teacher status|stop <reason>|start | report [YYYY-MM-DD] | events [n] | run "cmd"
+EOF
+}
+
+main() {
+  local c="${1:-help}"
+  [ $# -gt 0 ] && shift
+  case "$c" in
+    agents) cmd_agents ;;
+    ls) cmd_ls ;;
+    status) cmd_status ;;
+    brief) cmd_brief "$@" ;;
+    doctor) cmd_doctor ;;
+    sync) cmd_sync ;;
+    start) cmd_start "$@" ;;
+    peek) cmd_peek "$@" ;;
+    say) cmd_say "$@" ;;
+    key) cmd_key "$@" ;;
+    stop) cmd_stop "$@" ;;
+    teacher) cmd_teacher "$@" ;;
+    report) cmd_report "$@" ;;
+    events) cmd_events "$@" ;;
+    run) cmd_run "$@" ;;
+    help|-h|--help) usage ;;
+    *) usage; exit 2 ;;
+  esac
+}
+
+main "$@"

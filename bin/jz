@@ -1,0 +1,187 @@
+#!/usr/bin/env bash
+# jz: steer the JzLab agents from the MacBook.
+# Spark agents run in tmux on the Spark (reached over SSH); Mac agents run in tmux here.
+# Works with macOS's bash 3.2.
+set -u
+
+JZ_ROOT=$(cd "$(dirname "$0")/.." && pwd)
+if [ -f "$JZ_ROOT/.env" ]; then
+  # shellcheck disable=SC1091
+  . "$JZ_ROOT/.env"
+fi
+SPARK_HOST=${SPARK_HOST:-spark}
+SPARK_JZ=${SPARK_JZ:-lab/JzLab}            # relative to the Spark user's home
+MAC_LAB_DIR=${MAC_LAB_DIR:-$HOME/lab}
+GH_OWNER=${GH_OWNER:-JehanzebAli11}
+JZ_LOCAL=${JZ_LOCAL:-0}                     # 1 = treat this machine as the Spark (tests)
+
+die() { echo "jz: $*" >&2; exit 1; }
+
+where_of() {
+  local f="$JZ_ROOT/agents/$1/agent.env"
+  [ -f "$f" ] || die "no agent '$1' (see: jz agents)"
+  local w
+  w=$(grep '^WHERE=' "$f" | head -n 1 | cut -d= -f2 | tr -d '"')
+  echo "${w:-spark}"
+}
+
+spark() {
+  # run jzd on the Spark with the given arguments, quoted for the remote shell
+  if [ "$JZ_LOCAL" = "1" ]; then
+    JZ_WHERE=spark bash "$JZ_ROOT/spark/jzd" "$@"
+    return
+  fi
+  local q
+  q=$(printf '%q ' "$@")
+  ssh -o BatchMode=yes -o ConnectTimeout=10 "$SPARK_HOST" "JZ_WHERE=spark bash \"\$HOME/$SPARK_JZ/spark/jzd\" $q"
+}
+
+mac() {
+  LAB_DIR="$MAC_LAB_DIR" JZ_WHERE=mac JZ_SESSION=jzlab-mac TEACHER_URL=none \
+    bash "$JZ_ROOT/spark/jzd" "$@"
+}
+
+has_mac_agents() { grep -lq '^WHERE=mac' "$JZ_ROOT"/agents/*/agent.env 2>/dev/null; }
+
+on_agent_host() {
+  # on_agent_host <agent> <jzd args...>
+  local a="$1"
+  shift
+  if [ "$(where_of "$a")" = mac ]; then mac "$@"; else spark "$@"; fi
+}
+
+upload_prompt() {
+  # copy a Mac-side prompt file to the Spark and print its path there
+  local name="$1" file="$2"
+  [ -f "$file" ] || die "no file $file"
+  if [ "$JZ_LOCAL" = "1" ]; then
+    (cd "$(dirname "$file")" && echo "$(pwd)/$(basename "$file")")
+    return
+  fi
+  ssh -o BatchMode=yes "$SPARK_HOST" \
+    "mkdir -p \"\$HOME/lab/.jzlab/run\" && cat > \"\$HOME/lab/.jzlab/run/$name.custom.md\" && echo \"\$HOME/lab/.jzlab/run/$name.custom.md\"" < "$file"
+}
+
+cmd_start() {
+  local name="" prompt="" rest=""
+  local args=()
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --prompt) prompt="$2"; shift 2 ;;
+      --headless|--continue) args+=("$1"); shift ;;
+      *) name="$1"; shift ;;
+    esac
+  done
+  [ -n "$name" ] || die "usage: jz start <agent> [--prompt FILE] [--headless] [--continue]"
+  if [ -n "$prompt" ]; then
+    case "$prompt" in
+      /*) rest="$prompt" ;;
+      *) rest="$JZ_ROOT/$prompt"; [ -f "$rest" ] || rest="$(pwd)/$prompt" ;;
+    esac
+    if [ "$(where_of "$name")" = spark ]; then
+      rest=$(upload_prompt "$name" "$rest") || exit 1
+    fi
+    args+=(--prompt "$rest")
+  fi
+  on_agent_host "$name" start "$name" ${args[@]+"${args[@]}"}
+}
+
+cmd_attach() {
+  local name="${1:-}" session=jzlab
+  if [ -n "$name" ] && [ "$(where_of "$name")" = mac ]; then
+    tmux attach -t jzlab-mac \; select-window -t "$name"
+    return
+  fi
+  [ "$JZ_LOCAL" = "1" ] && die "attach is for a real terminal"
+  if [ -n "$name" ]; then
+    ssh -t "$SPARK_HOST" "tmux attach -t $session \\; select-window -t $name"
+  else
+    ssh -t "$SPARK_HOST" "tmux attach -t $session"
+  fi
+}
+
+cmd_teacher() {
+  local sub="${1:-status}"
+  if [ "$sub" = stop ]; then
+    shift
+    local yes=0 why=""
+    while [ $# -gt 0 ]; do
+      case "$1" in --yes) yes=1; shift ;; *) why="$why $1"; shift ;; esac
+    done
+    [ -n "$why" ] || die "say why: jz teacher stop <reason> (e.g. \"spark-one LoRA training\")"
+    if [ "$yes" != 1 ]; then
+      if [ -t 0 ]; then
+        printf 'Stop the Gemma teacher on the Spark for:%s ? Agents using it will stall. [y/N] ' "$why"
+        read -r ans
+        case "$ans" in y|Y|yes) ;; *) die "not stopped" ;; esac
+      else
+        die "stopping the teacher needs the owner: run it yourself, or pass --yes after asking"
+      fi
+    fi
+    spark teacher stop "$why"
+  else
+    spark teacher "$@"
+  fi
+}
+
+cmd_prs() {
+  command -v gh >/dev/null || die "gh is not installed on this Mac"
+  local repos
+  repos=$( { grep -h '^REPO=' "$JZ_ROOT"/agents/*/agent.env | cut -d= -f2 | tr -d '"'; \
+             grep -v '^#' "$JZ_ROOT/repos.txt" 2>/dev/null | awk 'NF{print $1}'; } | sort -u)
+  local r
+  for r in $repos; do
+    gh pr list -R "$r" --state open --json number,title,isDraft,headRefName,updatedAt \
+      --template '{{range .}}'"$r"' #{{.number}}{{if .isDraft}} (draft){{end}} {{.title}} [{{.headRefName}}] {{timeago .updatedAt}}{{"\n"}}{{end}}' 2>/dev/null
+  done
+}
+
+usage() {
+  cat <<'EOF'
+jz: steer the JzLab agents (Spark agents over SSH, Mac agents locally)
+
+  jz agents                     the registry: every agent, where it runs, its window
+  jz doctor                     check SSH, tmux, claude, gh, repos on the Spark
+  jz sync                       pull JzLab on the Spark, clone missing repos, fetch the rest
+  jz brief [lines]              status + the last lines of every live agent (start here)
+  jz status | jz ls             machine, teacher, queue, agents (ls: agents only)
+  jz start <agent> [--prompt FILE] [--continue] [--headless]
+  jz peek <agent> [lines]       read an agent's screen
+  jz say <agent> "message"      type a message to an agent and press Enter
+  jz key <agent> KEYS...        send raw keys (Escape, Enter, Down, 1, 2 ...)
+  jz stop <agent>               stop an agent (resume with: jz start <agent> --continue)
+  jz attach [agent]             open the Spark's tmux in this terminal (detach: Ctrl-b d)
+  jz teacher status|start|stop <reason> [--yes]
+  jz report [YYYY-MM-DD]        the spark-lab nightly report
+  jz events [n]                 what jz did recently (starts, messages, keys)
+  jz prs                        open pull requests across all repos
+  jz run "command"              run a shell command in ~/lab on the Spark
+EOF
+}
+
+main() {
+  local c="${1:-help}"
+  [ $# -gt 0 ] && shift
+  case "$c" in
+    agents) spark agents ;;
+    doctor) echo "== Spark ($SPARK_HOST)"; spark doctor; if has_mac_agents; then echo "== Mac"; mac doctor; fi ;;
+    sync) spark sync; if has_mac_agents; then echo "== Mac"; mac sync; fi ;;
+    brief) spark brief "$@"; if has_mac_agents; then echo; echo "== Mac agents"; mac ls; fi ;;
+    status) spark status; if has_mac_agents; then echo "== Mac agents"; mac ls; fi ;;
+    ls) spark ls; if has_mac_agents; then mac ls | tail -n +2; fi ;;
+    start) cmd_start "$@" ;;
+    peek|say|key|stop)
+      [ $# -gt 0 ] || die "usage: jz $c <agent> ..."
+      on_agent_host "$1" "$c" "$@" ;;
+    attach) cmd_attach "$@" ;;
+    teacher) cmd_teacher "$@" ;;
+    report) spark report "$@" ;;
+    events) spark events "$@" ;;
+    run) spark run "$@" ;;
+    prs) cmd_prs ;;
+    help|-h|--help) usage ;;
+    *) usage; exit 2 ;;
+  esac
+}
+
+main "$@"

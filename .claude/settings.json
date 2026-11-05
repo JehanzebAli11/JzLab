@@ -1,0 +1,44 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bin/jz brief *)",
+      "Bash(bin/jz ls)",
+      "Bash(bin/jz status)",
+      "Bash(bin/jz agents)",
+      "Bash(bin/jz doctor)",
+      "Bash(bin/jz sync)",
+      "Bash(bin/jz peek *)",
+      "Bash(bin/jz say *)",
+      "Bash(bin/jz key *)",
+      "Bash(bin/jz start *)",
+      "Bash(bin/jz report *)",
+      "Bash(bin/jz events *)",
+      "Bash(bin/jz prs)",
+      "Bash(bin/jz teacher status)",
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push)",
+      "Bash(git pull *)",
+      "Bash(gh pr list *)",
+      "Bash(gh pr view *)",
+      "Bash(gh pr diff *)",
+      "Bash(gh pr checks *)",
+      "Bash(gh api *)"
+    ],
+    "ask": [
+      "Bash(bin/jz teacher stop *)",
+      "Bash(bin/jz teacher start)",
+      "Bash(bin/jz stop *)",
+      "Bash(bin/jz run *)",
+      "Bash(ssh *)",
+      "Bash(gh pr merge *)",
+      "Bash(git push --force *)"
+    ],
+    "deny": [
+      "Read(./.env)"
+    ]
+  }
+}

@@ -1,0 +1,4 @@
+# Extra repos `jz sync` keeps on the Spark (owner/repo  folder-under-~/lab).
+# Agent repos are added automatically from agents/*/agent.env.
+JehanzebAli11/urdu-token-tax urdu-token-tax
+JehanzebAli11/cricket-shot-coach cricket-shot-coach
