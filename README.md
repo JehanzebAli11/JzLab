@@ -37,6 +37,11 @@ claude                       # the orchestrator; paste prompts/orchestrator-star
 
 First time: [docs/SETUP.md](docs/SETUP.md).
 
+**Claude Project mode (beta):** run JzLab as a Claude Project. Threads run in the cloud or
+directly on the Spark through Remote Control (`bin/jz rc up`), and you steer them all from
+claude.ai or the phone. See [docs/PROJECT.md](docs/PROJECT.md); the project instructions to
+paste are in [project/INSTRUCTIONS.md](project/INSTRUCTIONS.md).
+
 ## What's here
 
 | Path | What |

@@ -289,6 +289,74 @@ cmd_status() {
   cmd_ls
 }
 
+RC_SESSION=${JZ_RC_SESSION:-jzrc}
+
+rc_dirs() {
+  # one Remote Control server per project repo on this host (agent repos, no duplicates)
+  local n
+  for n in $(agent_names); do
+    load_agent "$n"
+    [ "$WHERE" = "$JZ_WHERE" ] && echo "$DIR"
+  done | sort -u
+}
+
+cmd_rc() {
+  # Remote Control servers, so a Claude Project can run threads in these folders
+  # ("Work locally") and you can steer them from claude.ai or the phone.
+  local sub="${1:-status}" d host list
+  [ $# -gt 0 ] && shift
+  # repo folder names never contain spaces, so a plain word list is safe here
+  if [ $# -gt 0 ]; then list="$*"; else list=$(rc_dirs); fi
+  host=$(hostname -s 2>/dev/null || hostname)
+  case "$sub" in
+    up)
+      tmux has-session -t "$RC_SESSION" 2>/dev/null \
+        || tmux new-session -d -s "$RC_SESSION" -n home -c "$LAB_DIR" </dev/null >/dev/null 2>&1
+      for d in $list; do
+        if [ ! -d "$LAB_DIR/$d/.git" ]; then echo "skip $d: not cloned (jz sync)"; continue; fi
+        if tmux list-windows -t "$RC_SESSION" -F '#{window_name}' | grep -qx "$d"; then
+          echo "up   $d (already serving)"; continue
+        fi
+        DIR="$d" WORKTREE=0 install_settings "$LAB_DIR/$d" >/dev/null
+        local launcher="$STATE/run/rc-$d.sh"
+        {
+          echo '#!/usr/bin/env bash'
+          printf 'cd %q || exit 1\n' "$LAB_DIR/$d"
+          echo '# restart after a crash or a network drop; Ctrl-b & (kill window) to stop for good'
+          echo 'while true; do'
+          printf '  %q remote-control --spawn worktree --name %q\n' "$CLAUDE_BIN" "$d @ $host"
+          echo '  echo "[jz] remote-control exited ($?); restarting in 15 s"; sleep 15'
+          echo 'done'
+        } > "$launcher"
+        chmod +x "$launcher"
+        tmux new-window -d -t "$RC_SESSION" -n "$d" -c "$LAB_DIR/$d" "bash $(printf %q "$launcher")"
+        echo "up   $d -> session name \"$d @ $host\""
+      done
+      echo "$(date '+%F %T') rc up ${*:-all}" >> "$STATE/events.log"
+      echo "First run only: answer the one-time questions (Enable Remote Control? / Trust folder?) with: jz attach-rc" ;;
+    status)
+      for d in $(rc_dirs); do
+        if tmux list-windows -t "$RC_SESSION" -F '#{window_name}' 2>/dev/null | grep -qx "$d"; then
+          local last
+          last=$(tmux capture-pane -p -J -t "$RC_SESSION:$d" -S -30 2>/dev/null | grep -v '^[[:space:]]*$' | tail -n 1 | cut -c1-90)
+          if tmux capture-pane -p -t "$RC_SESSION:$d" -S -30 2>/dev/null | grep -qiE '\(y/n\)|\[y/N\]'; then
+            printf '%-26s %-10s %s\n' "$d" "ANSWER-ME" "$last"
+          else
+            printf '%-26s %-10s %s\n' "$d" "serving" "$last"
+          fi
+        else
+          printf '%-26s %-10s\n' "$d" "down"
+        fi
+      done ;;
+    down)
+      for d in $list; do
+        tmux kill-window -t "$RC_SESSION:$d" 2>/dev/null && echo "down $d"
+      done
+      echo "$(date '+%F %T') rc down ${*:-all}" >> "$STATE/events.log" ;;
+    *) die "usage: jz rc up [repo...] | status | down [repo...]" ;;
+  esac
+}
+
 cmd_report() {
   local d="$LAB_DIR/spark-lab/reports" f
   [ -d "$d" ] || die "no reports folder at $d"
@@ -394,6 +462,7 @@ jzd <command>   (normally called through bin/jz on the Mac)
   start <agent> [--prompt FILE] [--headless] [--continue]
   peek <agent> [lines] | say <agent> "msg" | key <agent> KEYS... | stop <agent>
   teacher status|stop <reason>|start | report [YYYY-MM-DD] | events [n] | run "cmd"
+  rc up [repo...] | rc status | rc down [repo...]   (Remote Control servers for Claude Projects)
 EOF
 }
 
@@ -414,6 +483,7 @@ main() {
     stop) cmd_stop "$@" ;;
     teacher) cmd_teacher "$@" ;;
     report) cmd_report "$@" ;;
+    rc) cmd_rc "$@" ;;
     events) cmd_events "$@" ;;
     run) cmd_run "$@" ;;
     help|-h|--help) usage ;;

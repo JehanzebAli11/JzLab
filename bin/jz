@@ -153,6 +153,9 @@ jz: steer the JzLab agents (Spark agents over SSH, Mac agents locally)
   jz attach [agent]             open the Spark's tmux in this terminal (detach: Ctrl-b d)
   jz teacher status|start|stop <reason> [--yes]
   jz report [YYYY-MM-DD]        the spark-lab nightly report
+  jz rc up|status|down          Remote Control servers on the Spark, one per repo, so a
+                                Claude Project can run threads there ("Work locally")
+  jz attach-rc                  answer Remote Control's one-time questions on the Spark
   jz events [n]                 what jz did recently (starts, messages, keys)
   jz prs                        open pull requests across all repos
   jz run "command"              run a shell command in ~/lab on the Spark
@@ -176,6 +179,10 @@ main() {
     attach) cmd_attach "$@" ;;
     teacher) cmd_teacher "$@" ;;
     report) spark report "$@" ;;
+    rc) spark rc "$@" ;;
+    attach-rc)
+      [ "$JZ_LOCAL" = "1" ] && die "attach-rc is for a real terminal"
+      ssh -t "$SPARK_HOST" "tmux attach -t jzrc" ;;
     events) spark events "$@" ;;
     run) spark run "$@" ;;
     prs) cmd_prs ;;

@@ -21,7 +21,8 @@ export PATH="$T/bin:$PATH"
 
 cat > "$CLAUDE_BIN" <<'EOF'
 #!/usr/bin/env bash
-case "$*" in --version) echo "9.9.9 (fake)"; exit 0 ;; *--continue*) echo "JZ-STATUS: resumed" ;; esac
+case "$*" in --version) echo "9.9.9 (fake)"; exit 0 ;;
+  remote-control*) echo "RC server: $*"; while sleep 1; do :; done ;; *--continue*) echo "JZ-STATUS: resumed" ;; esac
 printf 'fake-claude mode=%s\n' "$2"
 echo "JZ-STATUS: started fine"
 while IFS= read -r line; do
@@ -109,6 +110,13 @@ check "continue resumes" wait_for lit "JZ-STATUS: resumed"
 out=$("$JZ" ls); check "exited agent shows exited" has "$out" "lit .*exited"
 check "an exited agent can be restarted" "$JZ" start lit
 
+check "rc up starts a server per spark repo" "$JZ" rc up
+out=$("$JZ" rc status); check "rc status: lit serving" has "$out" "lost-in-transliteration .*serving"
+check "rc status lists 5 spark repos" test "$(echo "$out" | wc -l)" -eq 5
+check "rc server uses worktree spawn and a name" bash -c "tmux capture-pane -p -t jzrc:spark-one | grep -q 'RC server: remote-control --spawn worktree --name spark-one @'"
+out=$("$JZ" rc up); check "rc up is idempotent" has "$out" "already serving"
+check "rc down" "$JZ" rc down
+out=$("$JZ" rc status); check "rc status: down after down" has "$out" "spark-one .*down"
 out=$("$JZ" report); check "report prints the latest" has "$out" "report 2026-11-05"
 out=$("$JZ" events 50); check "events log the says" has "$out" "say lit: hello there"
 out=$("$JZ" doctor 2>&1); check "doctor sees the repos" has "$out" "ok   repo lost-in-transliteration"
