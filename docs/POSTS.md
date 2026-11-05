@@ -7,14 +7,16 @@ slips, the next ready post takes its slot. The orchestrator drafts into `posts/`
 | Date | Project | Hook (first line) | Visual | Post only when |
 | --- | --- | --- | --- | --- |
 | 5 Nov | Autopilot | [Posted](https://www.linkedin.com/feed/update/urn:li:activity:7523997421778087936/) | - | - |
-| 10 Nov | Scam Radar | "I'm building a scam checker for Urdu and Roman Urdu texts that can't leak your messages: the app has no internet permission." | The demo video (rendered app screens, labelled demo mode) | PR #1 merged; say "prototype"; edit the launch draft in scam-radar `HANDOVER.md` |
-| 12 Nov | Self-healing spark-lab | "My GPU box fixes its own crashes overnight. On 780 broken training runs, the auto-fix rescued 458. Plain retries rescued 1.3%." | The Self-healing section of a real nightly report | Phase D Steps 1-2 ran on the Spark; say which numbers are simulated and which are from real GPU faults |
-| 17 Nov | Lost in Transliteration | "Meta's Prompt Guard 2 catches 48.5% of my English prompt-injection attacks. Write the same attacks in Roman Urdu and it catches 11.5%." | The detection-drop chart by script, from `results/table_detection_drop` | Write-up on GitHub; model evals done; Meta and ProtectAI told a few days before (PLAN §0.5) |
-| 19 Nov | Agent firewall | "My agent firewall scored 0.9999 AUROC in its own sandbox and 0.41 on real emails. Here's what fixed it, or didn't." | Before/after bar: sandbox vs BIPIA AUROC | Phase E Step 4 done, so there is an "after" number |
-| 24 Nov | Spark-1 (teaser) | "Reorder the options and gpt-4o-mini changes its answer 31% of the time." | One question shown twice, options swapped, two different answers | Spark-1 step 5 (E2B baseline) is in; state n = 300 |
-| 26 Nov | Scam Radar on a phone | "A 270M-parameter model checking scam texts on a phone, offline: here's the memory it takes." | `results.mp4` chart from real `device.json` files | The phone test ran and the model beat TF-IDF; otherwise post the honest miss |
-| 1 Dec | Spark-1 results | Lead with calibration: does Spark-1 know when it's wrong? (from `report.json`) | Reliability diagram: Spark-1 vs E2B base vs gpt-4o-mini | Step 7 report exists; adapter stays private unless Jehanzeb decides |
-| 3 Dec | Autopilot follow-up | "Week 4 of letting an agent learn my obby": the Prism Gauntlet learning curve | The game-scored curve plus a short screen recording | The curve shows a trend; move this earlier if it's ready first |
+| Tue 10 Nov | Agent firewall | "One hidden line on a page can turn an AI agent against its user. So I built an action firewall." | `linkedin_card.png` or the wallet-drainer GIF | `prompts/threads/firewall-post-check.md` passed; says "scripted agents, synthetic attacks" |
+| Thu 12 Nov | Spark-1 teaser | "Decision models are here. Reorder the options and gpt-4o-mini changes its answer 31% of the time." | One question shown twice, options swapped | Decisions API baseline run; n stated |
+| Tue 17 Nov | Lost in Transliteration | "Meta's Prompt Guard 2 catches 48.5% of my English prompt-injection attacks. In Roman Urdu it catches 11.5%." | The detection-drop chart by script | Write-up public; vendors told 13 Nov |
+| Thu 19 Nov | Scam Radar launch | "A scam checker for Urdu and Roman Urdu texts that can't leak your messages: the app has no internet permission." | The demo video (labelled demo mode) | PR #1 merged; says "prototype" |
+| Tue 24 Nov | Self-healing spark-lab | "My GPU box fixes its own crashes overnight." plus real GPU numbers | A real nightly report's Self-healing section | heal Steps 1-2 ran on the Spark |
+| Thu 26 Nov | Agent firewall, part 2 | "Last time my firewall worked on scripted agents. Here's what happened with real ones." | Before/after: scripted vs real agents, BIPIA AUROC | firewall part 1 and 2 results exist |
+| Tue 1 Dec | Spark-1 results | Does a 5B model know when it's wrong? (calibration first) | Reliability diagram: Spark-1, E2B base, gpt-4o-mini, Decisions API | Step-7 report exists |
+| Thu 3 Dec | Scam Radar on a phone | "A 270M model checking scam texts on a phone, offline: here's the memory it takes." | `results.mp4` from real `device.json` files | Phone test ran |
+| Tue 8 Dec | Autopilot learning curve | "I let an agent learn my obby for a month" | Game-scored curve plus a recording | The curve shows a trend |
+| Thu 10 Dec | Wi-Fi-name injection | "I hijacked an AI agent with a Wi-Fi network name." | A short video on your own network | Own network and agent only |
 
 Where today's numbers come from:
 
@@ -24,6 +26,7 @@ Where today's numbers come from:
 | 458 / 780, 1.3% | spark-lab PR #2 `results/` (doctor auto-fix) |
 | 0.9999 / 0.41 | agent-firewall `results/RESULTS.md`, `results/external_eval.json` |
 | 31% (order agreement 0.690, n = 300) | spark-one `runs/eval-only/gpt-4o-mini/eval/report.md` |
+| 0.564 accuracy, ECE 0.399 (zero-shot E2B, 133 graded items) | spark-one zero-shot E2B report (see HANDOFF.md status table) |
 
 ## Rules
 

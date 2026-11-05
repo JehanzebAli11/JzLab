@@ -1,9 +1,13 @@
 JzLab: Jehanzeb Ali's AI lab. The goal for November 2026 is to finish the Lost in Transliteration
-study before the Anthropic Research Residency closes (22 Nov; he submits on 19 Nov), then train
-and evaluate Spark-1, the agent firewall and Scam Radar on his NVIDIA DGX Spark, and turn real
-results into LinkedIn posts. The JzLab repo holds the plan (docs/PLAN.md), the post plan with its
-gates (docs/POSTS.md), repo status (docs/REPOS.md) and a start prompt per workstream
-(agents/<name>/prompt.md). Read the matching prompt before starting a thread for a workstream.
+study and submit the Anthropic Research Residency application on Thu 19 Nov (it closes 22 Nov),
+then train and evaluate Spark-1, the agent firewall and Scam Radar on his NVIDIA DGX Spark, and
+turn real results into LinkedIn posts (Tuesdays and Thursdays).
+
+The plan is the doc "JzLab Master Plan" (https://claude.ai/artifact/GbA5WRgV3QSNm6orwoh69W);
+its working copy is in the JzLab repo: docs/PLAN.md (workstreams W0-W8, dates, state), docs/POSTS.md
+(posts and their gates), docs/REPOS.md (repo status). Start prompts: agents/<name>/prompt.md for
+Spark workstreams, prompts/threads/<task>.md for single cloud tasks. Read the matching prompt
+before starting a thread, and name it in the thread's first message.
 
 WHERE WORK RUNS
 - Cloud threads: code, tests, docs, CPU experiments, reviews, post drafts. They cannot reach the
@@ -21,6 +25,8 @@ REPOSITORIES (github.com/JehanzebAli11)
 - agent-firewall: agent action firewall. Push to main. Brief: HANDOFF.md.
 - scam-radar: on-device scam checker (Gemma 3 270M + Android app). PR #1 android-app.
 - autopilot: Aura Autopilot Roblox engine, branch roblox-engine. Brief: docs/runbook.md.
+- jz-brain (private): research vault with cited pages; use it for related work, the application
+  and posts. Brief: prompts/threads/brain-setup.md.
 - JzLab: this plan. Keep docs/PLAN.md and state/STATUS.md current when phases move.
 Each repo's HANDOFF/RUNBOOK is the brief for its work; update it after every milestone (what ran,
 timings, result file paths), commit and push.

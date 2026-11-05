@@ -20,6 +20,11 @@ Coordination specific to this machine:
   `docs/` for that agent.
 - Step 10 (eval-only OpenRouter and Jev) keeps its caps ($3 and $5). Those outputs are never
   training data.
+- Eval-only OpenAI Decisions API baseline: once `spark_one/adapters/decisions.py` and
+  `jobs/spark-one-12-eval-decisions.json` exist (a cloud thread writes them, see
+  JzLab `prompts/threads/spark1-decisions-baseline.md`), run that job early (6-7 Nov, $3 cap) so the
+  12 Nov teaser post can compare it with gpt-4o-mini and zero-shot E2B. Its outputs are never
+  training data.
 
 Commit reports and figures, not checkpoints or generated images. The adapter goes only to a
 **private** Hugging Face repo, and only after the owner says yes (`JZ-NEED:`).
