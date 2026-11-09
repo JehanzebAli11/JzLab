@@ -7,13 +7,13 @@ One row per worker thread. "bridge" = control-session worker using the Mac bridg
 | --- | --- | --- | --- | --- | --- | --- |
 | a | bridge | ~/lab/worldsmith | SPEC WS-01 | done, pushed d01968a | make test 49 passed (control re-ran); CI run in progress | — |
 | a2 | bridge | ~/lab/worldsmith | SPEC WS-02 | done, pushed 0f0aa37 | 606 passed (control re-ran); HASHES.md --check ok; fix.json differs only in bridge_1.length | WS-03: owner opens Studio; decide BRIDGE_CROSSED trigger placement |
-| b | native Mac | ~/lab/lost-in-transliteration | prompts/threads/lit-native-mac.md (RUNBOOK step 5, 7, 8) | prompt sent 2026-11-09 18:45, waiting for owner to open | — | MPS check, first-epoch ETA |
+| b | native Mac | ~/lab/lost-in-transliteration | prompts/threads/lit-native-mac.md (RUNBOOK step 5, 7, 8) | done 2026-11-09 (commits 929a10d, 900ec4b, 31980f6, pushed by the session) | 6 detector runs trained on MPS + evaluated; analyze: all figures except fig9 (RQ7 probe, never run); write-up drafted | fresh-eyes review running; owner reviews writeup/ |
 | c | bridge | ~/lab/agent-firewall | prompts/threads/firewall-post-check.md | done 2026-11-09 18:55 (agent-firewall 6e49626) | every post number re-computed from results/*.json by control | owner: card says 8 hiding tricks (files: 7); headline choice |
 | c2 | bridge | ~/lab/agent-firewall | card 8→7 + headline switch (owner 1A, Switch) | done, pushed 78f3d76 | card regenerated on Mac, checked by control | owner posts Tue 10 Nov |
 | a3 | bridge + Studio MCP | ~/lab/worldsmith | SPEC WS-03 (+ BRIDGE_CROSSED ADR, P0 route test) | done 2026-11-09, pushed 3fd28cd | 771 passed (control re-ran); live F1-A/F1-E read-back 26/26, 0 diffs (bundles/ws03); route (a) probe n=1 each | owner: ADR 0004 decisions, then WS-04 |
 | d | bridge | ~/lab/JzLab | ROADMAP §8 CV v5 | drafted 2026-11-09 19:20 in a private doc (claude.ai/artifact/KsA12BK42bzMuj7sjmBPY3); drafts/ git-ignored (JzLab is public) | AI-work numbers re-checked against results files | owner fills 7 placeholders, confirms [CHECK] items |
 | e | control | — | ROADMAP §4.5 World Labs ask | drafted 2026-11-09, with owner to send | — | owner sends by 12 Nov |
 | f | bridge | ~/lab/JzLab | jzapi helper + state/SPEND.md | done 2026-11-09 (5d33838) | 46 passed (control re-ran); prices match pricing page 9 Nov; model IDs not live-checked (VM proxy blocks keyed API calls) | owner: `python -m jzapi.models --verify` on the Mac |
-| f2 | bridge (code) + native Mac (paid run) | ~/lab/lost-in-transliteration | RQ3 Sonnet 5.5 + Opus 5.5 via Batch, ≤ $20 | code done, pushed db459a0 (no spend) | 76 passed (control re-ran); thinking-default claim checked against docs | owner: Opus decision, then `make rq3-claude-sanity` on the Mac |
+| f2 | bridge (code) + native Mac (paid run) | ~/lab/lost-in-transliteration | RQ3 Sonnet 5.5 + Opus 5.5 via Batch, ≤ $20 | done 2026-11-09, pushed 39ea748 | 927 rows each; Sonnet 0.105 at cap, Opus 0; 0 empty; $4.79 (usage.csv) | — |
 | g | bridge | ~/lab/JzLab | Thu 12 Nov kickoff post | queued (Wed) | — | — |
 | — | Spark | — | LIT training fallback, B4 Gemma (wk 4) | waiting for Spark | — | — |
