@@ -50,7 +50,7 @@ All three keep a place in §5 and §10.
 - **Autopilot:** contributions merged upstream into [ramenvr/autopilot](https://github.com/ramenvr/autopilot) (Apache-2.0), an AI agent that plays and tests games:
   - [PR #40](https://github.com/ramenvr/autopilot/pull/40), `roblox-mcp`, a plugin-free Roblox Studio connector, merged to `staging` on 7 Nov;
   - [PR #38](https://github.com/ramenvr/autopilot/pull/38), `autopilot regress`, model-free replay of confirmed results, merged to `staging` on 7 Nov;
-  - the `evolve` work, as you describe it. Before it goes on the CV, confirm the PR number and branch, and credit it as precisely as #38 and #40.
+  - [PR #39](https://github.com/ramenvr/autopilot/pull/39), `evolve`, an autoresearch loop over the prompt, kit and constants, merged to `staging` on 7 Nov (commit `68ab39b`; confirmed on upstream staging 9 Nov).
 
   Your LinkedIn post about it did well.
 - **Lost in Transliteration:** prompt-injection research in Urdu and Roman Urdu. Meta's Prompt Guard 2 catches 48.5% of the English attacks but 11.5% of the same attacks in Roman Urdu. Model evals and the MCP-scanner phase are done; detector training and the write-up are left. The Residency application goes in on **19 Nov**.
@@ -337,7 +337,7 @@ Weeks start on Monday. "Agents" means Claude Project threads on your MacBook; Sp
 | Decision | Recommendation | By |
 | --- | --- | --- |
 | Licence for `worldsmith` | Apache-2.0, to match Autopilot | 10 Nov |
-| Exact credit line for `evolve` | Find the PR number and branch, then credit it like #38 and #40 | 10 Nov |
+| Exact credit line for `evolve` | **Decided 9 Nov:** PR #39, merged into staging 7 Nov (68ab39b) | done |
 | Send the World Labs credit ask (about $50, optionally $100, on your own account; written answers on publishing and confidentiality) | Send this week | 12 Nov |
 | Jev cap for P2 runs | $15 to start | Week 4 |
 | Open the upstream maintainer discussion | Yes, after the M0 clip exists | Week 2–3 |
