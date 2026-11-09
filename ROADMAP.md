@@ -54,7 +54,7 @@ All three keep a place in §5 and §10.
 
   Your LinkedIn post about it did well.
 - **Lost in Transliteration:** prompt-injection research in Urdu and Roman Urdu. Meta's Prompt Guard 2 catches 48.5% of the English attacks but 11.5% of the same attacks in Roman Urdu. Model evals and the MCP-scanner phase are done; detector training and the write-up are left. The Residency application goes in on **19 Nov**.
-- **Agent firewall:** attack success 22.4% → 0.0% on scripted agents, with 0.9% of legitimate actions blocked. A LinkedIn draft is ready. It hasn't been tested on real agents yet, and transfer to real emails (BIPIA) is 0.41 AUROC.
+- **Agent firewall:** attack success 22.4% → 0.0% on scripted agents, with 0.9% of legitimate actions blocked. A LinkedIn draft is ready. It hasn't been tested on real agents yet, and transfer to real emails (BIPIA) is 0.398 AUROC (n = 350: 300 injected, 50 clean; `results/external_eval.json`).
 - **Infrastructure:**
   - JzLab, an orchestrator for agents on your DGX Spark;
   - spark-lab, a job queue that heals itself;
