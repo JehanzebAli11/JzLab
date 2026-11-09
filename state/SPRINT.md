@@ -12,6 +12,6 @@ One row per worker thread. "bridge" = control-session worker using the Mac bridg
 | d | bridge | ~/lab/JzLab | ROADMAP §8 CV v5 | drafted 2026-11-09 19:20 in a private doc (claude.ai/artifact/KsA12BK42bzMuj7sjmBPY3); drafts/ git-ignored (JzLab is public) | AI-work numbers re-checked against results files | owner fills 7 placeholders, confirms [CHECK] items |
 | e | control | — | ROADMAP §4.5 World Labs ask | drafted 2026-11-09, with owner to send | — | owner sends by 12 Nov |
 | f | bridge | ~/lab/JzLab | jzapi helper + state/SPEND.md | done 2026-11-09 (5d33838) | 46 passed (control re-ran); prices match pricing page 9 Nov; model IDs not live-checked (VM proxy blocks keyed API calls) | owner: `python -m jzapi.models --verify` on the Mac |
-| f2 | bridge (code) + native Mac (paid run) | ~/lab/lost-in-transliteration | RQ3 Sonnet 5.5 + Opus 5.5 via Batch, ≤ $20 | code started 2026-11-09 19:40 | — | owner runs sanity (20 tasks) in Terminal |
+| f2 | bridge (code) + native Mac (paid run) | ~/lab/lost-in-transliteration | RQ3 Sonnet 5.5 + Opus 5.5 via Batch, ≤ $20 | code done, pushed db459a0 (no spend) | 76 passed (control re-ran); thinking-default claim checked against docs | owner: Opus decision, then `make rq3-claude-sanity` on the Mac |
 | g | bridge | ~/lab/JzLab | Thu 12 Nov kickoff post | queued (Wed) | — | — |
 | — | Spark | — | LIT training fallback, B4 Gemma (wk 4) | waiting for Spark | — | — |
