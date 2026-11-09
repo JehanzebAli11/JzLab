@@ -1,0 +1,44 @@
+# Claude API caps per job (USD). Mirrors ROADMAP §9; jzapi refuses any call that would take a
+# job over its cap, and any job whose `approved` is not true.
+# Raising a cap or approving a job needs Jehanzeb's yes, recorded in state/DECISIONS.md first.
+# spend_row is the job's label in state/SPEND.md (used by `python -m jzapi.spend`).
+total_usd: 400
+jobs:
+  lit_rq3:
+    cap_usd: 20          # inside LIT's $40 total cap
+    approved: true
+    approved_on: 2026-11-09
+    repo: lost-in-transliteration
+    spend_row: "LIT (RQ3 Sonnet/Opus)"
+  validator_redteam:
+    cap_usd: 25
+    approved: false
+    spend_row: "Validator red-team"
+  firewall_part2:
+    cap_usd: 40
+    approved: false
+    spend_row: "Firewall part 2"
+  architect_ladder:
+    cap_usd: 90
+    approved: false
+    spend_row: "Architect ladder"
+  p1_player:
+    cap_usd: 60
+    approved: false
+    spend_row: "P1 player"
+  m3_explorer:
+    cap_usd: 30
+    approved: false
+    spend_row: "M3 explorer"
+  m4_safety:
+    cap_usd: 50
+    approved: false
+    spend_row: "M4 safety"
+  applications:
+    cap_usd: 15
+    approved: false
+    spend_row: "Applications"
+  reserve:
+    cap_usd: 70
+    approved: false
+    spend_row: "Reserve"
