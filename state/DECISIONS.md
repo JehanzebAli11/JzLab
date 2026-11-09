@@ -15,3 +15,4 @@ One line per approval, redirect or teacher change, newest last:
 2026-11-09 18:32  owner  WS-04 risk: before WS-03 ends, test (a) server-script MoveTo via run_script_in_play_mode and (b) Autopilot roblox-mcp natively; recommend one with evidence; same test decides if P1 (Claude player) is possible
 2026-11-09 18:40  control  JzLab main had unrelated history vs origin (same trees). Rebased the one unpushed local commit (ROADMAP) onto origin/main; backup branch backup/pre-rebase-2026-11-09. No force-push.
 2026-11-09 19:25  control  CV v5 kept out of git (phone/email; JzLab is public); drafts/ added to .gitignore; CV draft lives in a private doc
+2026-11-09 19:40  control  Bridge VM's proxy blocks keyed calls to api.anthropic.com (401 from proxy). Paid Claude API runs move to the Mac terminal; bridge workers write and test code only. Key not moved.
