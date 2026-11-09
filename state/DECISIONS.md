@@ -16,3 +16,7 @@ One line per approval, redirect or teacher change, newest last:
 2026-11-09 18:40  control  JzLab main had unrelated history vs origin (same trees). Rebased the one unpushed local commit (ROADMAP) onto origin/main; backup branch backup/pre-rebase-2026-11-09. No force-push.
 2026-11-09 19:25  control  CV v5 kept out of git (phone/email; JzLab is public); drafts/ added to .gitignore; CV draft lives in a private doc
 2026-11-09 19:40  control  Bridge VM's proxy blocks keyed calls to api.anthropic.com (401 from proxy). Paid Claude API runs move to the Mac terminal; bridge workers write and test code only. Key not moved.
+2026-11-09 19:56  owner  LIT RQ3: keep Opus 5.5 (thinking on, effort low, max_tokens 1024) as its own labelled condition (A)
+2026-11-09 19:56  owner  Firewall post: fix the card's "8 hiding tricks" to 7 and regenerate (1A); lead with held-out attack styles 23.3% → 0.2% (2 Switch)
+2026-11-09 19:56  owner  state/APPLICATIONS.md stays local only (git-ignored); JzLab stays public (A)
+2026-11-09 19:56  owner  BRIDGE_CROSSED trigger anchored to the far side of gap_1 (first 2 studs of plat_b), not the bridge's far half (A); WS-03 records an ADR
