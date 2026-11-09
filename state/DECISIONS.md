@@ -21,3 +21,10 @@ One line per approval, redirect or teacher change, newest last:
 2026-11-09 19:56  owner  state/APPLICATIONS.md stays local only (git-ignored); JzLab stays public (A)
 2026-11-09 19:56  owner  BRIDGE_CROSSED trigger anchored to the far side of gap_1 (first 2 studs of plat_b), not the bridge's far half (A); WS-03 records an ADR
 2026-11-09 20:16  owner  LIT RQ3: Sonnet 5.5 max_tokens raised to 400 (A); sanity round 2 first, then full run (worst case $14.62)
+2026-11-09 20:29  owner  WS-04 (ADR 0004): P0 = server-scripted Humanoid:MoveTo waypoints (route a); SPEC §9 P0 wording updated and disclosed in every clip
+2026-11-09 20:29  owner  Enable Studio's built-in MCP server alongside WS-04 for route (b) / P1 (owner toggles it in Studio)
+2026-11-09 20:29  owner  Dedicated saved place for Worldsmith with a fixed standard character (LoadCharacterAppearance off / StarterCharacter)
+2026-11-09 20:29  owner  F1-A 10-stud hole kept for M0 (P0 never jumps); widen to >= 14 studs before any jumping player (P1/P2)
+2026-11-09 20:29  owner  T_attempt = 60 s, declared in config before any comparison
+2026-11-09 20:29  owner  Disable the "UI Workflow" and "robloxstudio-mcp" Studio plugins if unused (owner's action)
+2026-11-09 20:29  owner  LIT detector training session started natively on the Mac
