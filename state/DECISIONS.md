@@ -28,3 +28,4 @@ One line per approval, redirect or teacher change, newest last:
 2026-11-09 20:29  owner  T_attempt = 60 s, declared in config before any comparison
 2026-11-09 20:29  owner  Disable the "UI Workflow" and "robloxstudio-mcp" Studio plugins if unused (owner's action)
 2026-11-09 20:29  owner  LIT detector training session started natively on the Mac
+2026-11-09 21:10  control  M0 PASS verified (gate.json, config hash, commit time before first gate call, 852 tests). Defaults for a4's open questions: keep bundles/m0 and smoke runs committed as evidence; accept unenforceable run_code timeouts for M0 (revisit WS-11 / route b); BRIDGE_SHORT_HYPOTHESIS left to WS-08's classifier

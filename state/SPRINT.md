@@ -6,6 +6,7 @@ One row per worker thread. "bridge" = control-session worker using the Mac bridg
 | ID | Where | Folder | Ticket / source | State | Last verified result | Next step |
 | --- | --- | --- | --- | --- | --- | --- |
 | a | bridge | ~/lab/worldsmith | SPEC WS-01 | done, pushed d01968a | make test 49 passed (control re-ran); CI run in progress | — |
+| a4 | bridge + Studio MCP | ~/lab/worldsmith | SPEC WS-04 / M0 gate | done 2026-11-09, M0 PASS (bundles/m0/gate.json) | F1-A FELL 3/3, fix SUCCESS 3/3, same controller 3743d998; config committed 15:52:55Z before first gate call 15:53:15Z; 852 passed (control re-ran) | owner: re-save place; restart Claude app for built-in Studio MCP; plan WS-05..08 |
 | a2 | bridge | ~/lab/worldsmith | SPEC WS-02 | done, pushed 0f0aa37 | 606 passed (control re-ran); HASHES.md --check ok; fix.json differs only in bridge_1.length | WS-03: owner opens Studio; decide BRIDGE_CROSSED trigger placement |
 | b | native Mac | ~/lab/lost-in-transliteration | prompts/threads/lit-native-mac.md (RUNBOOK step 5, 7, 8) | done 2026-11-09 (commits 929a10d, 900ec4b, 31980f6, pushed by the session) | 6 detector runs trained on MPS + evaluated; analyze: all figures except fig9 (RQ7 probe, never run); write-up drafted | fresh-eyes review running; owner reviews writeup/ |
 | c | bridge | ~/lab/agent-firewall | prompts/threads/firewall-post-check.md | done 2026-11-09 18:55 (agent-firewall 6e49626) | every post number re-computed from results/*.json by control | owner: card says 8 hiding tricks (files: 7); headline choice |
