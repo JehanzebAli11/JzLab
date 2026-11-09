@@ -37,7 +37,7 @@ def _cells(line: str) -> list[str]:
 
 
 def _row(cells: list[str]) -> str:
-    return "| " + " | ".join(cells) + " |"
+    return "|" + "|".join(f" {c} " if c else " " for c in cells) + "|"
 
 
 def _money(x: float) -> str:
