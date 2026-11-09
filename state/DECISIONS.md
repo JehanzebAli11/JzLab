@@ -30,3 +30,4 @@ One line per approval, redirect or teacher change, newest last:
 2026-11-09 20:29  owner  LIT detector training session started natively on the Mac
 2026-11-09 21:10  control  M0 PASS verified (gate.json, config hash, commit time before first gate call, 852 tests). Defaults for a4's open questions: keep bundles/m0 and smoke runs committed as evidence; accept unenforceable run_code timeouts for M0 (revisit WS-11 / route b); BRIDGE_SHORT_HYPOTHESIS left to WS-08's classifier
 2026-11-09 21:13  owner  LIT RQ3 option A: re-run Haiku, Sonnet, nano (and Gemma) at a shared max_tokens 1024 to remove truncation; within lit_rq3 $20 cap; owner runs paid steps on the Mac. Write-up fixes per writeup/REVIEW.md
+2026-11-09 21:30  control  WS-05 done (1026 tests). Defaults for its questions: patch bumps version (ADR 0006); WS-06 rejects no-op patches as wasted revisions; malformed-before-stale order kept; schema in grammar/, code in validator/
