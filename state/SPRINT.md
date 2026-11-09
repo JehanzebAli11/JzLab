@@ -13,6 +13,7 @@ One row per worker thread. "bridge" = control-session worker using the Mac bridg
 | c2 | bridge | ~/lab/agent-firewall | card 8→7 + headline switch (owner 1A, Switch) | done, pushed 78f3d76 | card regenerated on Mac, checked by control | owner posts Tue 10 Nov |
 | a3 | bridge + Studio MCP | ~/lab/worldsmith | SPEC WS-03 (+ BRIDGE_CROSSED ADR, P0 route test) | done 2026-11-09, pushed 3fd28cd | 771 passed (control re-ran); live F1-A/F1-E read-back 26/26, 0 diffs (bundles/ws03); route (a) probe n=1 each | owner: ADR 0004 decisions, then WS-04 |
 | f3 | bridge (code) + native Mac (paid) | ~/lab/lost-in-transliteration | RQ3 uniform 1024 rerun + REVIEW analysis fixes | started 2026-11-09 21:15 | — | owner runs sanity, then full |
+| a6 | bridge | ~/lab/worldsmith | SPEC WS-06 validator | done 2026-11-09 (dcf444b) | 1212 passed (control re-ran); 69 abuse rejected, 13 legit pass; 28 stable codes | WS-07, WS-08 started |
 | a5 | bridge | ~/lab/worldsmith | SPEC WS-05 patch apply | done 2026-11-09 (f43f41a) | 1026 passed (control re-ran); M0 fix reproduced as a patch | WS-06 validator next |
 | g | bridge | ~/lab/JzLab | Thu 12 Nov kickoff post + shot list | drafted, committed a897db6 | numbers traced to bundles/m0 | owner records clip Wed (fresh logged runs) |
 | d | bridge | ~/lab/JzLab | ROADMAP §8 CV v5 | drafted 2026-11-09 19:20 in a private doc (claude.ai/artifact/KsA12BK42bzMuj7sjmBPY3); drafts/ git-ignored (JzLab is public) | AI-work numbers re-checked against results files | owner fills 7 placeholders, confirms [CHECK] items |
