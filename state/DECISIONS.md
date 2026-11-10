@@ -53,3 +53,5 @@ One line per approval, redirect or teacher change, newest last:
 2026-11-10 22:43  Jehanzeb  Firewall comment: reply that the sweep is work in progress; no change to agent-firewall for now (no sweep worker).
 2026-11-10 22:43  Jehanzeb  Meta form: submitted. Autopilot bench run: his. Do not delete Workspace.Worldsmith from Autopilot's testplace.rbxl (Autopilot run-03/F and run-04 reruns stay parked).
 2026-11-10 22:46  Jehanzeb  LIT vendor heads-up emails: already sent (ahead of the 13 Nov plan).
+2026-11-11 00:39  Jehanzeb  CV v5: control decides; GitHub profile: full control; demo video today; one-page site on a separate path or subdomain of jehanzeb.xyz (keep ai.jehanzeb.xyz free); hosted on Vercel.
+2026-11-11 01:20  control  Kickoff post updated (option A): drops "None of the AI part exists yet", adds the m2_f1a_b3 result with its limits; Next = harder rooms. CV v5 updated (held-out firewall numbers, Worldsmith result, 5 LLMs in LIT). Profile README, worldsmith README, LIT Apache-2.0 pushed.

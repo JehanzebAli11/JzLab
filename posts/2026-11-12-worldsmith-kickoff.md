@@ -1,7 +1,7 @@
 # Worldsmith kickoff: LinkedIn post (Thu 12 Nov 2026)
 
 Series: **AI architect vs AI player**, episode 1.
-Status: draft, not posted. Jehanzeb records the clip and posts it. Source repo: worldsmith
+Status: draft, not posted. Updated 11 Nov with the m2_f1a_b3 result (option A). Jehanzeb records the clip and posts it. Source repo: worldsmith
 (public, `github.com/JehanzebAli11/worldsmith`, `main` at `a0cec39`).
 Gate for this post: M0 PASS in `bundles/m0/gate.json` (met), and a clip recorded from real
 Studio footage per the shot list below (not yet recorded). Without the clip, post it text-only
@@ -11,15 +11,17 @@ or move it; never use mock frames.
 
 Most game-testing agents try to get better at the level. For the next 8 weeks I'm building the other side: an AI that fixes the level, so the same player can pass it.
 
-The series is "AI architect vs AI player". A frozen player tries a small Roblox room I own and fails. An AI architect reads what happened and proposes a small JSON patch to the world. A separate validator rejects any patch that cheats: moving the goal, shrinking the gap, changing player physics, adding a teleport. Then the room is rebuilt from scratch and the same player tries again. None of the AI part exists yet.
+The series is "AI architect vs AI player". A frozen player tries a small Roblox room I own and fails. An AI architect reads what happened and proposes a small JSON patch to the world. A separate validator rejects any patch that cheats: moving the goal, shrinking the gap, changing player physics, adding a teleport. Then the room is rebuilt from scratch and the same player tries again.
 
 It builds on my contributions to Autopilot, an open-source AI agent that plays and tests games: roblox-mcp (PR #40), regress (PR #38) and evolve (PR #39), merged into its staging branch on 7 Nov.
 
 The first gate passed on Monday. A room built from a JSON recipe, with a 6-stud bridge over a 16-stud gap: the player fell 3 of 3 times. I changed one field, bridge length 6 → 16: it crossed and reached the goal 3 of 3, with the same controller (same hash). Read back from Studio, the rebuilt room matched its recipe: 26 of 26 objects, 0 differences.
 
-What that is not: the player is a scripted walker (server-side MoveTo waypoints, never jumps), not an AI agent, and I wrote the fix by hand as a control. n = 3 per room only shows the plumbing works.
+What that is not: the player is a scripted walker (server-side MoveTo waypoints, never jumps), not an AI agent, and I wrote that first fix by hand as a control. n = 3 per room only shows the plumbing works.
 
-Next: the validator, and every way I can find for an architect to cheat.
+On Tuesday the AI part ran. Claude Haiku, Sonnet and Opus each got the failed run as the architect. Each proposed the same one-field patch on its first call, the validator accepted it, and the rebuilt room was completed 3 of 3. That's one run per model on an easy room, and a random valid patch also fixes it, in 3 tries. So it shows the loop works end to end, not which model is better.
+
+Next: harder rooms, where a random patch rarely works, and every way I can find for an architect to cheat.
 
 #AIAgents #GameDev #AIEvals
 
@@ -105,6 +107,9 @@ Notes:
 | Pass bar committed before the first gate run | worldsmith `docs/M0.md`; git log | config in `f4160e7` (2026-11-09 15:52:55 UTC) before the first gate call (15:53:15 UTC) | — |
 | "server-side MoveTo waypoints, never jumps" | worldsmith `config/m0.yaml`; `bundles/m0/F1-A/episode.json`; ADR 0004 decision 1 | `player.driver`; per-attempt jumps 0 (`docs/M0.md` tables) | — |
 | PR #40 roblox-mcp, #38 regress, #39 evolve; merged into staging 7 Nov | worldsmith `deps.md`; upstream `ramenvr/autopilot` `staging` | `53a41f6` (#40), `af1e32b` (#38), `68ab39b` (#39): all three are on upstream `staging` and authored by JehanzebAli11 (re-checked 9 Nov with `git merge-base --is-ancestor` against a fresh fetch); merged 7 Nov 04:48–05:09 PKT | — |
+| "Haiku, Sonnet and Opus … same one-field patch on its first call … completed 3 of 3" | worldsmith `bundles/experiments/m2_f1a_b3/results.json` | per condition: `revisions.verdicts` = [ACCEPTED], `revisions.used` = 1, v2 `outcomes` = [SUCCESS ×3]; each reply's `response_text` = `set bridge_1.length 16` (`<episode>/architect/replies/*.json`) | 1 episode per model; 3 attempts per version |
+| "On Tuesday" | worldsmith `results/usage.csv` | architect rows 16:41, 16:57 and 17:22 UTC on 2026-11-10 (a Tuesday) | 3 calls |
+| "a random valid patch also fixes it, in 3 tries" | worldsmith `bundles/experiments/m2_f1a_pilot/B2/ep0/summary.json` | verdicts [REJECTED, REJECTED, ACCEPTED]; v2 SUCCESS ×3 (player p0.v2) | 1 episode |
 | Apache-2.0 (worldsmith) | worldsmith `LICENSE`, `deps.md` | — | — |
 | "pinned at the #40 merge commit; no Autopilot code copied" | worldsmith `deps.md` | Pinned commit `53a41f6a…0e36`; "not vendored, and no Autopilot code is copied" | — |
 | "on Monday" | worldsmith `docs/M0.md`, bundle run IDs | runs `m0-2026-11-09T155306` and `m0-2026-11-09T155836`; 9 Nov 2026 is a Monday | — |
