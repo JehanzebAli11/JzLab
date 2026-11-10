@@ -19,7 +19,7 @@ One row per worker thread. "bridge" = control-session worker using the Mac bridg
 | a6 | bridge | ~/lab/worldsmith | SPEC WS-06 validator | done 2026-11-09 (dcf444b) | 1212 passed (control re-ran); 69 abuse rejected, 13 legit pass; 28 stable codes | WS-07, WS-08 started |
 | a5 | bridge | ~/lab/worldsmith | SPEC WS-05 patch apply | done 2026-11-09 (f43f41a) | 1026 passed (control re-ran); M0 fix reproduced as a patch | WS-06 validator next |
 | g | bridge | ~/lab/JzLab | Thu 12 Nov kickoff post + shot list | drafted, committed a897db6 | numbers traced to bundles/m0 | owner records clip Wed (fresh logged runs) |
-| v1 | bridge | ~/lab/lost-in-transliteration | vendor heads-up drafts | done 2026-11-10 (local only, git-ignored) | 6 notes; 3 main (Meta, Patronus Protect, Protect AI) | owner sends 13 Nov |
+| v1 | bridge | ~/lab/lost-in-transliteration | vendor heads-up drafts | done 2026-11-10 (local only, git-ignored) | 6 notes; 3 main (Meta, Patronus Protect, Protect AI) | sent by owner (reported 10 Nov 22:46) |
 | d | bridge | ~/lab/JzLab | ROADMAP §8 CV v5 | drafted 2026-11-09 19:20 in a private doc (claude.ai/artifact/KsA12BK42bzMuj7sjmBPY3); drafts/ git-ignored (JzLab is public) | AI-work numbers re-checked against results files | owner fills 7 placeholders, confirms [CHECK] items |
 | e | control | — | ROADMAP §4.5 World Labs ask | drafted 2026-11-09, with owner to send | — | owner sends by 12 Nov |
 | f | bridge | ~/lab/JzLab | jzapi helper + state/SPEND.md | done 2026-11-09 (5d33838) | 46 passed (control re-ran); prices match pricing page 9 Nov; model IDs not live-checked (VM proxy blocks keyed API calls) | owner: `python -m jzapi.models --verify` on the Mac |

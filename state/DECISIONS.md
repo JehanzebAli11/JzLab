@@ -52,3 +52,4 @@ One line per approval, redirect or teacher change, newest last:
 2026-11-10 22:45  control  Firewall post comment (threshold sweep / 41% unseen-task false blocks): reply drafted from results/metrics.json [24]; owner yes/no pending on a CPU-only threshold-sweep worker in agent-firewall.
 2026-11-10 22:43  Jehanzeb  Firewall comment: reply that the sweep is work in progress; no change to agent-firewall for now (no sweep worker).
 2026-11-10 22:43  Jehanzeb  Meta form: submitted. Autopilot bench run: his. Do not delete Workspace.Worldsmith from Autopilot's testplace.rbxl (Autopilot run-03/F and run-04 reruns stay parked).
+2026-11-10 22:46  Jehanzeb  LIT vendor heads-up emails: already sent (ahead of the 13 Nov plan).
