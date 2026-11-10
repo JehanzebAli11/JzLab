@@ -12,7 +12,7 @@ jobs:
     spend_row: "LIT (RQ3 Sonnet/Opus)"
   validator_redteam:
     cap_usd: 25
-    approved: false
+    approved: true
     spend_row: "Validator red-team"
   firewall_part2:
     cap_usd: 40
@@ -20,7 +20,7 @@ jobs:
     spend_row: "Firewall part 2"
   architect_ladder:
     cap_usd: 90
-    approved: false
+    approved: true
     spend_row: "Architect ladder"
   p1_player:
     cap_usd: 60

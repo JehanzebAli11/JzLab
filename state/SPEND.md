@@ -5,9 +5,9 @@ Budget: $400 total (ROADMAP §9). Nothing is spent until a job's row says so. Fi
 | Job | Budget | Approved | Spent | Last updated |
 | --- | --- | --- | --- | --- |
 | LIT (RQ3 Sonnet/Opus) | $20 (inside LIT's $40 cap) | yes, 2026-11-09 | $6.40 | 2026-11-09 |
-| Validator red-team | $25 | no | $0.00 | — |
+| Validator red-team | $25 | yes, 2026-11-10 | $0.00 | — |
 | Firewall part 2 | $40 | no | $0.00 | — |
-| Architect ladder | $90 | no | $0.00 | — |
+| Architect ladder | $90 | yes, 2026-11-10 | $0.00 | — |
 | P1 player | $60 | no | $0.00 | — |
 | M3 explorer | $30 | no | $0.00 | — |
 | M4 safety | $50 | no | $0.00 | — |
