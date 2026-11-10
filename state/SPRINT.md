@@ -27,3 +27,4 @@ One row per worker thread. "bridge" = control-session worker using the Mac bridg
 | g | bridge | ~/lab/JzLab | Thu 12 Nov kickoff post | queued (Wed) | — | — |
 | — | Spark | — | LIT training fallback, B4 Gemma (wk 4) | waiting for Spark | — | — |
 | a14 | VM (control) + Mac (owner, architect calls) | p0.v3 + close m2_f1a_pilot + smoke_f1e_p0v3b + m2_f1a_b3 | done 2026-11-10 (worldsmith d624bda, pushed) | smoke 6/6 SUCCESS; m2_f1a_b3: Haiku, Sonnet, Opus each FELL x3 on v1, 1 ACCEPTED patch (bridge_1.length 16 = B1 hand fix), v2 SUCCESS x3; $0.037481; n = 1 episode each | harder scenes before any model comparison |
+| ws14 | Mac worker (owner starts; Worktree on, ~/lab/worldsmith) | WS-14 harder F1 rooms (docs/TICKETS.md, worldsmith 6bae778) | ready to start 2026-11-11 | — | CPU: fixtures F1-B/C/D + ADR + offline hardness (≤5%); then live gate in Studio; then m2_hard config for owner approval |
