@@ -26,3 +26,4 @@ One row per worker thread. "bridge" = control-session worker using the Mac bridg
 | f2 | bridge (code) + native Mac (paid run) | ~/lab/lost-in-transliteration | RQ3 Sonnet 5.5 + Opus 5.5 via Batch, ≤ $20 | done 2026-11-09, pushed 39ea748 | 927 rows each; Sonnet 0.105 at cap, Opus 0; 0 empty; $4.79 (usage.csv) | — |
 | g | bridge | ~/lab/JzLab | Thu 12 Nov kickoff post | queued (Wed) | — | — |
 | — | Spark | — | LIT training fallback, B4 Gemma (wk 4) | waiting for Spark | — | — |
+| a14 | VM (control) | p0.v3 spawn check + close m2_f1a_pilot + configs smoke_f1e_p0v3 / m2_f1a_b3 | running | pilot B0-B2 valid; B3 SYSTEM_ERROR (harness flake) | then: restart Studio, smoke 6/6, run m2_f1a_b3 (<= $2.96) |
