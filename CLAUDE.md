@@ -93,6 +93,7 @@ the owner), `JZ-DONE:` (finished). `bin/jz ls` shows the latest one per agent.
 - `docs/PLAN.md`: run order and dates. `docs/POSTS.md`: LinkedIn plan and gates.
   `docs/REPOS.md`: what each repo holds. `docs/SETUP.md`: one-time setup.
 - `prompts/`: tasks for you (weekly review, post drafts, the Residency application).
-- The living plan doc: https://claude.ai/artifact/4pwZnw44HKt5AH9u4Cfypp
+- The plan: `ROADMAP.md` (source of truth since 10 Nov 2026). The older Spark & LinkedIn Plan
+  (https://claude.ai/artifact/4pwZnw44HKt5AH9u4Cfypp) is history.
 
 Changing an agent's prompt: edit it here, commit, push, `bin/jz sync`, then start or `say`.
