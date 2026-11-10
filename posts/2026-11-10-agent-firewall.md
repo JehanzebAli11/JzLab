@@ -1,6 +1,6 @@
 # Agent firewall: LinkedIn post (Tue 10 Nov 2026)
 
-Status: checked draft, not posted. Jehanzeb posts it. Source repo: agent-firewall (`docs/linkedin_post.md` holds the same text).
+Status: POSTED by Jehanzeb on 2026-11-10 (~20:40 PKT). Source repo: agent-firewall (`docs/linkedin_post.md` holds the same text).
 
 ## Post
 
