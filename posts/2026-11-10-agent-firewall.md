@@ -30,7 +30,7 @@ The numbers are from results/metrics.json, results/wallet_metrics.json and resul
 
 `agent-firewall/results/figures/linkedin_card.png` (1200x627 card, rendered at 2400x1254).
 
-**Card status (2026-11-09, thread c2):** the footer's "8 hiding tricks" was a hard-coded literal in `scripts/make_summary_card.py`; it is now computed from `metrics.json` `[0].breakdown.trick` keys minus `none` (= 7). The PNGs are **not regenerated yet** (the Linux VM can't download a Playwright browser). Regenerate on the Mac: `cd ~/lab/agent-firewall && python scripts/make_summary_card.py`, then open `results/figures/linkedin_card.png` and check the footer says 7. **Headline mismatch for Jehanzeb to decide:** the card's first big number is the in-distribution 22.4% → 0.0%; the post now leads with held-out styles 23.3% → 0.2%. The card doesn't contradict the post (the post quotes 22.4% → 0.0% as the trained-on-styles line), but it emphasises a different row. Alternative visual: `results/figures/demo_blocked_exfiltration.gif` (1100x640, 8 frames, 277 KB).
+**Card status (2026-11-10, control):** regenerated on the Mac (9 Nov 15:12) and checked by eye: leads with 23.3% → 0.2% on held-out styles, then 97.9% → 0.0% wallet drains, 41% unseen-task false blocks; footer says 7 hiding tricks and 0.9% false blocks on held-out styles. Matches the post. Alternative visual: `results/figures/demo_blocked_exfiltration.gif` (1100x640, 8 frames, 277 KB).
 
 ## Sources
 
