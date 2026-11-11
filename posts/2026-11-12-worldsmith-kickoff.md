@@ -1,11 +1,10 @@
 # Worldsmith kickoff: LinkedIn post (Thu 12 Nov 2026)
 
 Series: **AI architect vs AI player**, episode 1.
-Status: draft, not posted. Updated 11 Nov with the m2_f1a_b3 result (option A). Jehanzeb records the clip and posts it. Source repo: worldsmith
-(public, `github.com/JehanzebAli11/worldsmith`, `main` at `a0cec39`).
-Gate for this post: M0 PASS in `bundles/m0/gate.json` (met), and a clip recorded from real
-Studio footage per the shot list below (not yet recorded). Without the clip, post it text-only
-or move it; never use mock frames.
+Status: FINAL, ready to post Thu 12 Nov (11 Nov 15:45 PKT). Not posted: Jehanzeb posts it.
+Attach: `~/lab/worldsmith/docs/media/episode1.mp4` (53 s, 1080x1350, worldsmith `5fede75`).
+Gate for this post: M0 PASS in `bundles/m0/gate.json` (met); clip made from real Studio footage
+(met, with the replay disclosure in the first comment; see bundles/clip-2026-11-11/README.md).
 
 ## Post
 
@@ -33,13 +32,13 @@ The numbers come from bundles/m0/gate.json and the two episode bundles (bundles/
 
 My Autopilot PRs: github.com/ramenvr/autopilot/pull/40, /pull/38 and /pull/39. Worldsmith uses Autopilot as an external dependency pinned at the #40 merge commit; no Autopilot code is copied in. Much of the code was written with Claude Code.
 
-The clip is real Studio footage from a re-run of the same frozen controller for the camera, not one of the 6 logged gate attempts.
+The video is real Roblox Studio footage of the same rooms and the same scripted route, filmed under Studio's normal Play because the logged test mode doesn't draw the player on screen. The 3-of-3 numbers come from the logged runs, not the footage; a fresh set of logged runs on the clip day matched them (fell 3 of 3, crossed 3 of 3). Details: bundles/clip-2026-11-11/README.md.
 
-(Keep the last paragraph only if the clip comes from a recording re-run, which is the plan below. If it does, the re-run's outcome must match the gate; see the shot list's stop rule.)
+More of my work, with every number linked to its source: jz.business
 
 ## Visual: 30–60 s native video, captions burned in
 
-Not recorded yet. Owner records it in Roblox Studio on the Mac, place
+Done 11 Nov: `docs/media/episode1.mp4` in worldsmith (53 s). Original plan kept below for the record. Owner records it in Roblox Studio on the Mac, place
 `~/lab/worldsmith/places/worldsmith-lab.rbxl`, following the shot list below. Real footage
 only: no mock frames, no re-timed or edited outcomes, no generated video.
 
@@ -110,6 +109,7 @@ Notes:
 | "Haiku, Sonnet and Opus … same one-field patch on its first call … completed 3 of 3" | worldsmith `bundles/experiments/m2_f1a_b3/results.json` | per condition: `revisions.verdicts` = [ACCEPTED], `revisions.used` = 1, v2 `outcomes` = [SUCCESS ×3]; each reply's `response_text` = `set bridge_1.length 16` (`<episode>/architect/replies/*.json`) | 1 episode per model; 3 attempts per version |
 | "On Tuesday" | worldsmith `results/usage.csv` | architect rows 16:41, 16:57 and 17:22 UTC on 2026-11-10 (a Tuesday) | 3 calls |
 | "a random valid patch also fixes it, in 3 tries" | worldsmith `bundles/experiments/m2_f1a_pilot/B2/ep0/summary.json` | verdicts [REJECTED, REJECTED, ACCEPTED]; v2 SUCCESS ×3 (player p0.v2) | 1 episode |
+| Clip re-runs: fell 3 of 3, crossed 3 of 3 (first comment) | worldsmith `bundles/clip-2026-11-11/F1-A/summary.json`, `F1-A-fix/summary.json` | counts FELL 3; SUCCESS 3 | 3 + 3 |
 | Apache-2.0 (worldsmith) | worldsmith `LICENSE`, `deps.md` | — | — |
 | "pinned at the #40 merge commit; no Autopilot code copied" | worldsmith `deps.md` | Pinned commit `53a41f6a…0e36`; "not vendored, and no Autopilot code is copied" | — |
 | "on Monday" | worldsmith `docs/M0.md`, bundle run IDs | runs `m0-2026-11-09T155306` and `m0-2026-11-09T155836`; 9 Nov 2026 is a Monday | — |
