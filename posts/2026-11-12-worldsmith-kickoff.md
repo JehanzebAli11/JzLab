@@ -8,33 +8,35 @@ Gate for this post: M0 PASS in `bundles/m0/gate.json` (met); clip made from real
 
 ## Post
 
-Most game-testing agents try to get better at the level. For the next 8 weeks I'm building the other side: an AI that fixes the level, so the same player can pass it.
+I'm a Roblox and VR game developer. Now I'm building an AI that fixes broken levels.
 
-The series is "AI architect vs AI player". A frozen player tries a small Roblox room I own and fails. An AI architect reads what happened and proposes a small JSON patch to the world. A separate validator rejects any patch that cheats: moving the goal, shrinking the gap, changing player physics, adding a teleport. Then the room is rebuilt from scratch and the same player tries again.
+Most AI game testers try to get better at playing a level. I'm going the other way. When a player gets stuck, can an AI change the level so the same player gets through, without cheating?
 
-It builds on my contributions to Autopilot, an open-source AI agent that plays and tests games: roblox-mcp (PR #40), regress (PR #38) and evolve (PR #39), merged into its staging branch on 7 Nov.
+Here's how it works. A scripted player walks through a small Roblox room I built and fails. Claude looks at what went wrong and suggests a change to the room. A separate checker throws out anything that cheats, like moving the goal closer or giving the player a teleport. Then the room gets rebuilt and the same player tries again.
 
-The first gate passed on Monday. A room built from a JSON recipe, with a 6-stud bridge over a 16-stud gap: the player fell 3 of 3 times. I changed one field, bridge length 6 → 16: it crossed and reached the goal 3 of 3, with the same controller (same hash). Read back from Studio, the rebuilt room matched its recipe: 26 of 26 objects, 0 differences.
+First test this week: a bridge that's too short over a gap. The player fell in 3 times out of 3. I made the bridge longer by hand, and it crossed 3 out of 3. Then I gave the broken room to Claude Haiku, Sonnet and Opus. All three suggested the same fix on their first try, and the player made it across every time.
 
-What that is not: the player is a scripted walker (server-side MoveTo waypoints, never jumps), not an AI agent, and I wrote that first fix by hand as a control. n = 3 per room only shows the plumbing works.
+To be clear about what this is: the player is a simple script that never jumps, not an AI. And this room was easy. A random change fixes it too. So all this shows is that the whole loop works in a real game engine. It says nothing yet about which model is better.
 
-On Tuesday the AI part ran. Claude Haiku, Sonnet and Opus each got the failed run as the architect. Each proposed the same one-field patch on its first call, the validator accepted it, and the rebuilt room was completed 3 of 3. That's one run per model on an easy room, and a random valid patch also fixes it, in 3 tries. So it shows the loop works end to end, not which model is better.
+Next week: harder rooms, where guessing doesn't work.
 
-Next: harder rooms, where a random patch rarely works, and every way I can find for an architect to cheat.
+It builds on what I contributed to Autopilot, an open-source agent that plays and tests games. My three PRs were merged last week.
+
+The video is the actual room in Roblox Studio.
 
 #AIAgents #GameDev #AIEvals
 
 ## First comment
 
-Code, the gate as written down before the runs, and every raw run log: github.com/JehanzebAli11/worldsmith (Apache-2.0)
+Code and every run log: github.com/JehanzebAli11/worldsmith
 
-The numbers come from bundles/m0/gate.json and the two episode bundles (bundles/m0/F1-A, bundles/m0/F1-A-fix); docs/M0.md walks through them. The pass bar (3/3 before, 3/3 after, same controller hash, read-back match) was committed before the first gate run. The fall is expected by construction: a walker that never jumps can't cross a 10-stud hole. The point is that the real engine reproduces it and that a one-field fix changes the outcome under the same frozen controller. All runs were in Roblox Studio on my own local place, which is not published.
+I wrote the pass/fail rules down before running anything. The numbers in the post come from bundles/m0/gate.json and bundles/experiments/m2_f1a_b3.
 
-My Autopilot PRs: github.com/ramenvr/autopilot/pull/40, /pull/38 and /pull/39. Worldsmith uses Autopilot as an external dependency pinned at the #40 merge commit; no Autopilot code is copied in. Much of the code was written with Claude Code.
+About the video: it's real Studio footage of the same rooms and the same scripted route. I filmed it in normal Play mode because the logged test mode doesn't show the player on screen, so the 3/3 counts come from the logged runs, not the clip.
 
-The video is real Roblox Studio footage of the same rooms and the same scripted route, filmed under Studio's normal Play because the logged test mode doesn't draw the player on screen. The 3-of-3 numbers come from the logged runs, not the footage; a fresh set of logged runs on the clip day matched them (fell 3 of 3, crossed 3 of 3). Details: bundles/clip-2026-11-11/README.md.
+My Autopilot PRs: github.com/ramenvr/autopilot/pull/40, /pull/38 and /pull/39. I wrote a lot of the code with Claude Code.
 
-More of my work, with every number linked to its source: jz.business
+More of my work: jz.business
 
 ## Visual: 30–60 s native video, captions burned in
 
@@ -115,6 +117,14 @@ Notes:
 | "on Monday" | worldsmith `docs/M0.md`, bundle run IDs | runs `m0-2026-11-09T155306` and `m0-2026-11-09T155836`; 9 Nov 2026 is a Monday | — |
 
 ## Checks
+
+- **12 Nov rewrite (plain voice, owner asked for "less AI-written").** Dropped from the post:
+  controller hash, 26/26 read-back, stud sizes, PR names. New wording checked: "this week" (gate
+  Mon 9 Nov, AI runs Tue 10 Nov); "every time" (each model's v2 SUCCESS ×3, 1 episode each);
+  "A random change fixes it too" (pilot B2 ep0: 2 rejected, 3rd accepted, SUCCESS ×3, player
+  p0.v2); "three PRs merged last week" (#40, #38, #39 on staging, 7 Nov PKT); "Next week: harder
+  rooms" (harder-rooms post planned Fri 20 Nov). Labels kept: scripted, never jumps, not an AI;
+  easy room; says nothing about which model is better. Post ~250 words.
 
 - Every number in the post and first comment traced to the file and key above; the scene diff
   (one field, `bridge_1.length` 6 → 16) and the read-back counts were re-read from the files,
