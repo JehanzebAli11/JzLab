@@ -7,10 +7,10 @@ Budget: $400 total (ROADMAP §9). Nothing is spent until a job's row says so. Fi
 | LIT (RQ3 Sonnet/Opus) | $20 (inside LIT's $40 cap) | yes, 2026-11-09 | $6.40 | 2026-11-10 |
 | Validator red-team | $25 | yes, 2026-11-10 | $0.00 | — |
 | Firewall part 2 | $40 | no | $0.00 | — |
-| Architect ladder | $90 | yes, 2026-11-10 | $0.04 ($0.039687, 6 calls; worldsmith results/usage.csv) | 2026-11-10 |
+| Architect ladder | $90 | yes, 2026-11-10 | $1.02 ($0.039687 + m2_hard $0.983522, 65 calls; worldsmith results/usage.csv) | 2026-11-12 |
 | P1 player | $60 | no | $0.00 | — |
 | M3 explorer | $30 | no | $0.00 | — |
 | M4 safety | $50 | no | $0.00 | — |
 | Applications | $15 | no | $0.00 | — |
 | Reserve | $70 | no | $0.00 | — |
-| **Total** | **$400** | | **$6.44** | |
+| **Total** | **$400** | | **$7.42** | |
