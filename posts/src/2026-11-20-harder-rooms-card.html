@@ -1,0 +1,38 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+:root{--bg:oklch(18.5% .03 260);--panel:oklch(22% .032 260);--line:oklch(31% .035 260);--fg:oklch(95% .01 260);--fg2:oklch(84% .02 260);--muted:oklch(72% .025 260);--amber:oklch(80% .15 75)}
+*{box-sizing:border-box}body{margin:0;width:1080px;height:1350px;background:var(--bg);color:var(--fg);font-family:"Hanken Grotesk Variable",sans-serif;
+background-image:linear-gradient(oklch(24.5% .034 260) 1px,transparent 1px),linear-gradient(90deg,oklch(24.5% .034 260) 1px,transparent 1px);background-size:48px 48px}
+.wrap{padding:72px 72px 56px;height:100%;display:flex;flex-direction:column}
+.kick{color:var(--amber);font-size:26px;font-weight:600;margin-bottom:18px}
+h1{font-family:"Space Grotesk Variable",sans-serif;font-size:64px;line-height:1.04;letter-spacing:-.02em;margin:0 0 20px;font-weight:700}
+.sub{font-size:26px;color:var(--fg2);line-height:1.4;margin:0 0 40px}
+table{width:calc(100% + 16px);table-layout:fixed;border-collapse:separate;border-spacing:8px;margin:0 -8px}
+col.rc{width:36%}
+th{font-size:24px;font-weight:600;color:var(--fg2);text-align:center;padding:0 0 6px}
+th.room{text-align:left}
+td{height:104px;border-radius:10px;text-align:center;font-family:"JetBrains Mono Variable",monospace;font-size:38px;font-weight:600;color:var(--fg)}
+td.room{background:none;text-align:left;font-family:"Hanken Grotesk Variable",sans-serif;font-size:24px;font-weight:600;line-height:1.25;padding-right:6px}
+td.room span{display:block;font-weight:400;color:var(--muted);font-size:20px}
+.s0{background:oklch(25.5% .036 260);border:1px solid var(--line);color:var(--muted)}
+.s3{background:oklch(80% .15 75);color:oklch(20% .03 75)}
+tr.tot td{height:92px;font-size:34px}
+tr.tot td.room{font-size:26px}
+.t0{background:oklch(25.5% .036 260);border:1px solid var(--line);color:var(--muted)}
+.t6{background:oklch(52% .1 75);color:oklch(97% .01 75)}
+.t12{background:oklch(80% .15 75);color:oklch(20% .03 75)}
+.foot{margin-top:auto;font-size:20px;line-height:1.5;color:var(--muted)}
+.foot b{color:var(--fg2);font-weight:600}
+</style></head><body><div class="wrap">
+<div class="kick">Worldsmith, harder rooms</div>
+<h1>Four broken Roblox rooms. Which AI fixed them?</h1>
+<p class="sub">Rooms repaired, out of 3 separate runs per model per room. The same scripted player plays before and after every fix.</p>
+<table><colgroup><col class="rc"><col><col><col><col></colgroup>
+<tr><th class="room">Room</th><th>Random<br>patch</th><th>Haiku</th><th>Sonnet</th><th>Opus</th></tr>
+<tr><td class="room">F1-A<span>bridge too short</span></td><td class="s0">0/3</td><td class="s3">3/3</td><td class="s3">3/3</td><td class="s3">3/3</td></tr>
+<tr><td class="room">F1-B<span>bridge beside the path</span></td><td class="s0">0/3</td><td class="s3">3/3</td><td class="s3">3/3</td><td class="s3">3/3</td></tr>
+<tr><td class="room">F1-C<span>lever behind a wall</span></td><td class="s0">0/3</td><td class="s0">0/3</td><td class="s3">3/3</td><td class="s3">3/3</td></tr>
+<tr><td class="room">F1-D<span>lever walled off and bridge short</span></td><td class="s0">0/3</td><td class="s0">0/3</td><td class="s3">3/3</td><td class="s3">3/3</td></tr>
+<tr class="tot"><td class="room">Total</td><td class="t0">0/12</td><td class="t6">6/12</td><td class="t12">12/12</td><td class="t12">12/12</td></tr>
+</table>
+<div class="foot"><b>Player:</b> a script that only walks (server-side MoveTo, never jumps), not an AI. <b>Counts, not rates:</b> 3 runs per model per room on four hand-built rooms. 59 API calls, $0.98 in total.<br><b>Data:</b> github.com/JehanzebAli11/worldsmith, bundles/experiments/m2_hard_*/results.json</div>
+</div></body></html>
